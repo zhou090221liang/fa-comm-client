@@ -156,6 +156,11 @@
             str = new Date();
             console.log("扩展toString", str, Comm.Convert.toString(str));
             /*********************Convert************************/
+
+            /*********************Url************************/
+            console.log("当前地址参数:", Comm.Url.convert());
+            console.log("当前地址参数:", Comm.Url.getParams("name"));
+            /*********************Url************************/
         }
     </script>
 </body>

@@ -4,6 +4,7 @@ import * as lib_proto_string from './lib/proto/string';
 import { Verify } from './lib/verify';
 import { Convert } from './lib/convert';
 import { Random } from './lib/random';
+import { Url } from './lib/url';
 
-window.Comm = { Verify, Convert, Random };
+window.Comm = { Verify, Convert, Random, Url };
 export const Comm = window.Comm;

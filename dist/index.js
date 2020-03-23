@@ -7895,7 +7895,7 @@ var objectKeys = Object.keys || function (obj) {
 module.exports = Duplex;
 
 /*<replacement>*/
-var util = Object.create(__webpack_require__(19));
+var util = Object.create(__webpack_require__(22));
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -8686,300 +8686,6 @@ module.exports = Hash
 
 "use strict";
 
-var inherits = __webpack_require__(0)
-var MD5 = __webpack_require__(34)
-var RIPEMD160 = __webpack_require__(41)
-var sha = __webpack_require__(42)
-var Base = __webpack_require__(11)
-
-function Hash (hash) {
-  Base.call(this, 'digest')
-
-  this._hash = hash
-}
-
-inherits(Hash, Base)
-
-Hash.prototype._update = function (data) {
-  this._hash.update(data)
-}
-
-Hash.prototype._final = function () {
-  return this._hash.digest()
-}
-
-module.exports = function createHash (alg) {
-  alg = alg.toLowerCase()
-  if (alg === 'md5') return new MD5()
-  if (alg === 'rmd160' || alg === 'ripemd160') return new RIPEMD160()
-
-  return new Hash(sha(alg))
-}
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(Buffer) {// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// NOTE: These type checking functions intentionally don't use `instanceof`
-// because it is fragile and can be easily faked with `Object.create()`.
-
-function isArray(arg) {
-  if (Array.isArray) {
-    return Array.isArray(arg);
-  }
-  return objectToString(arg) === '[object Array]';
-}
-exports.isArray = isArray;
-
-function isBoolean(arg) {
-  return typeof arg === 'boolean';
-}
-exports.isBoolean = isBoolean;
-
-function isNull(arg) {
-  return arg === null;
-}
-exports.isNull = isNull;
-
-function isNullOrUndefined(arg) {
-  return arg == null;
-}
-exports.isNullOrUndefined = isNullOrUndefined;
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-exports.isNumber = isNumber;
-
-function isString(arg) {
-  return typeof arg === 'string';
-}
-exports.isString = isString;
-
-function isSymbol(arg) {
-  return typeof arg === 'symbol';
-}
-exports.isSymbol = isSymbol;
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-exports.isUndefined = isUndefined;
-
-function isRegExp(re) {
-  return objectToString(re) === '[object RegExp]';
-}
-exports.isRegExp = isRegExp;
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-exports.isObject = isObject;
-
-function isDate(d) {
-  return objectToString(d) === '[object Date]';
-}
-exports.isDate = isDate;
-
-function isError(e) {
-  return (objectToString(e) === '[object Error]' || e instanceof Error);
-}
-exports.isError = isError;
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-exports.isFunction = isFunction;
-
-function isPrimitive(arg) {
-  return arg === null ||
-         typeof arg === 'boolean' ||
-         typeof arg === 'number' ||
-         typeof arg === 'string' ||
-         typeof arg === 'symbol' ||  // ES6 symbol
-         typeof arg === 'undefined';
-}
-exports.isPrimitive = isPrimitive;
-
-exports.isBuffer = Buffer.isBuffer;
-
-function objectToString(o) {
-  return Object.prototype.toString.call(o);
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).Buffer))
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(Buffer) {module.exports = function xor (a, b) {
-  var length = Math.min(a.length, b.length)
-  var buffer = new Buffer(length)
-
-  for (var i = 0; i < length; ++i) {
-    buffer[i] = a[i] ^ b[i]
-  }
-
-  return buffer
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).Buffer))
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(9);
-var assert = __webpack_require__(6);
-
-function BlockHash() {
-  this.pending = null;
-  this.pendingTotal = 0;
-  this.blockSize = this.constructor.blockSize;
-  this.outSize = this.constructor.outSize;
-  this.hmacStrength = this.constructor.hmacStrength;
-  this.padLength = this.constructor.padLength / 8;
-  this.endian = 'big';
-
-  this._delta8 = this.blockSize / 8;
-  this._delta32 = this.blockSize / 32;
-}
-exports.BlockHash = BlockHash;
-
-BlockHash.prototype.update = function update(msg, enc) {
-  // Convert message to array, pad it, and join into 32bit blocks
-  msg = utils.toArray(msg, enc);
-  if (!this.pending)
-    this.pending = msg;
-  else
-    this.pending = this.pending.concat(msg);
-  this.pendingTotal += msg.length;
-
-  // Enough data, try updating
-  if (this.pending.length >= this._delta8) {
-    msg = this.pending;
-
-    // Process pending data in blocks
-    var r = msg.length % this._delta8;
-    this.pending = msg.slice(msg.length - r, msg.length);
-    if (this.pending.length === 0)
-      this.pending = null;
-
-    msg = utils.join32(msg, 0, msg.length - r, this.endian);
-    for (var i = 0; i < msg.length; i += this._delta32)
-      this._update(msg, i, i + this._delta32);
-  }
-
-  return this;
-};
-
-BlockHash.prototype.digest = function digest(enc) {
-  this.update(this._pad());
-  assert(this.pending === null);
-
-  return this._digest(enc);
-};
-
-BlockHash.prototype._pad = function pad() {
-  var len = this.pendingTotal;
-  var bytes = this._delta8;
-  var k = bytes - ((len + this.padLength) % bytes);
-  var res = new Array(k + this.padLength);
-  res[0] = 0x80;
-  for (var i = 1; i < k; i++)
-    res[i] = 0;
-
-  // Append length
-  len <<= 3;
-  if (this.endian === 'big') {
-    for (var t = 8; t < this.padLength; t++)
-      res[i++] = 0;
-
-    res[i++] = 0;
-    res[i++] = 0;
-    res[i++] = 0;
-    res[i++] = 0;
-    res[i++] = (len >>> 24) & 0xff;
-    res[i++] = (len >>> 16) & 0xff;
-    res[i++] = (len >>> 8) & 0xff;
-    res[i++] = len & 0xff;
-  } else {
-    res[i++] = len & 0xff;
-    res[i++] = (len >>> 8) & 0xff;
-    res[i++] = (len >>> 16) & 0xff;
-    res[i++] = (len >>> 24) & 0xff;
-    res[i++] = 0;
-    res[i++] = 0;
-    res[i++] = 0;
-    res[i++] = 0;
-
-    for (t = 8; t < this.padLength; t++)
-      res[i++] = 0;
-  }
-
-  return res;
-};
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var asn1 = exports;
-
-asn1.bignum = __webpack_require__(3);
-
-asn1.define = __webpack_require__(158).define;
-asn1.base = __webpack_require__(23);
-asn1.constants = __webpack_require__(84);
-asn1.decoders = __webpack_require__(163);
-asn1.encoders = __webpack_require__(165);
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var base = exports;
-
-base.Reporter = __webpack_require__(160).Reporter;
-base.DecoderBuffer = __webpack_require__(83).DecoderBuffer;
-base.EncoderBuffer = __webpack_require__(83).EncoderBuffer;
-base.Node = __webpack_require__(161);
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /**
  * 在数组的指定位置插入元素
@@ -9017,7 +8723,7 @@ Array.prototype.removeLast = function () {
 };
 
 /***/ }),
-/* 25 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9050,7 +8756,7 @@ Date.prototype.format = Date.prototype.Format = function (fmt) {
 };
 
 /***/ }),
-/* 26 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9318,6 +9024,300 @@ String.prototype.md5 = String.prototype.toMd5 = function () {
 //     return CryptoJS.AES.decrypt(this, password).toString();
 // }
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).Buffer))
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var inherits = __webpack_require__(0)
+var MD5 = __webpack_require__(34)
+var RIPEMD160 = __webpack_require__(41)
+var sha = __webpack_require__(42)
+var Base = __webpack_require__(11)
+
+function Hash (hash) {
+  Base.call(this, 'digest')
+
+  this._hash = hash
+}
+
+inherits(Hash, Base)
+
+Hash.prototype._update = function (data) {
+  this._hash.update(data)
+}
+
+Hash.prototype._final = function () {
+  return this._hash.digest()
+}
+
+module.exports = function createHash (alg) {
+  alg = alg.toLowerCase()
+  if (alg === 'md5') return new MD5()
+  if (alg === 'rmd160' || alg === 'ripemd160') return new RIPEMD160()
+
+  return new Hash(sha(alg))
+}
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+
+function isArray(arg) {
+  if (Array.isArray) {
+    return Array.isArray(arg);
+  }
+  return objectToString(arg) === '[object Array]';
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = Buffer.isBuffer;
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).Buffer))
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(Buffer) {module.exports = function xor (a, b) {
+  var length = Math.min(a.length, b.length)
+  var buffer = new Buffer(length)
+
+  for (var i = 0; i < length; ++i) {
+    buffer[i] = a[i] ^ b[i]
+  }
+
+  return buffer
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4).Buffer))
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(9);
+var assert = __webpack_require__(6);
+
+function BlockHash() {
+  this.pending = null;
+  this.pendingTotal = 0;
+  this.blockSize = this.constructor.blockSize;
+  this.outSize = this.constructor.outSize;
+  this.hmacStrength = this.constructor.hmacStrength;
+  this.padLength = this.constructor.padLength / 8;
+  this.endian = 'big';
+
+  this._delta8 = this.blockSize / 8;
+  this._delta32 = this.blockSize / 32;
+}
+exports.BlockHash = BlockHash;
+
+BlockHash.prototype.update = function update(msg, enc) {
+  // Convert message to array, pad it, and join into 32bit blocks
+  msg = utils.toArray(msg, enc);
+  if (!this.pending)
+    this.pending = msg;
+  else
+    this.pending = this.pending.concat(msg);
+  this.pendingTotal += msg.length;
+
+  // Enough data, try updating
+  if (this.pending.length >= this._delta8) {
+    msg = this.pending;
+
+    // Process pending data in blocks
+    var r = msg.length % this._delta8;
+    this.pending = msg.slice(msg.length - r, msg.length);
+    if (this.pending.length === 0)
+      this.pending = null;
+
+    msg = utils.join32(msg, 0, msg.length - r, this.endian);
+    for (var i = 0; i < msg.length; i += this._delta32)
+      this._update(msg, i, i + this._delta32);
+  }
+
+  return this;
+};
+
+BlockHash.prototype.digest = function digest(enc) {
+  this.update(this._pad());
+  assert(this.pending === null);
+
+  return this._digest(enc);
+};
+
+BlockHash.prototype._pad = function pad() {
+  var len = this.pendingTotal;
+  var bytes = this._delta8;
+  var k = bytes - ((len + this.padLength) % bytes);
+  var res = new Array(k + this.padLength);
+  res[0] = 0x80;
+  for (var i = 1; i < k; i++)
+    res[i] = 0;
+
+  // Append length
+  len <<= 3;
+  if (this.endian === 'big') {
+    for (var t = 8; t < this.padLength; t++)
+      res[i++] = 0;
+
+    res[i++] = 0;
+    res[i++] = 0;
+    res[i++] = 0;
+    res[i++] = 0;
+    res[i++] = (len >>> 24) & 0xff;
+    res[i++] = (len >>> 16) & 0xff;
+    res[i++] = (len >>> 8) & 0xff;
+    res[i++] = len & 0xff;
+  } else {
+    res[i++] = len & 0xff;
+    res[i++] = (len >>> 8) & 0xff;
+    res[i++] = (len >>> 16) & 0xff;
+    res[i++] = (len >>> 24) & 0xff;
+    res[i++] = 0;
+    res[i++] = 0;
+    res[i++] = 0;
+    res[i++] = 0;
+
+    for (t = 8; t < this.padLength; t++)
+      res[i++] = 0;
+  }
+
+  return res;
+};
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var asn1 = exports;
+
+asn1.bignum = __webpack_require__(3);
+
+asn1.define = __webpack_require__(158).define;
+asn1.base = __webpack_require__(26);
+asn1.constants = __webpack_require__(84);
+asn1.decoders = __webpack_require__(163);
+asn1.encoders = __webpack_require__(165);
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var base = exports;
+
+base.Reporter = __webpack_require__(160).Reporter;
+base.DecoderBuffer = __webpack_require__(83).DecoderBuffer;
+base.EncoderBuffer = __webpack_require__(83).EncoderBuffer;
+base.Node = __webpack_require__(161);
+
 
 /***/ }),
 /* 27 */
@@ -10476,15 +10476,15 @@ exports.Verify = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _array = __webpack_require__(24);
+var _array = __webpack_require__(18);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(25);
+var _date = __webpack_require__(19);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
-var _string = __webpack_require__(26);
+var _string = __webpack_require__(20);
 
 var lib_proto_string = _interopRequireWildcard(_string);
 
@@ -11572,7 +11572,7 @@ var Duplex;
 Writable.WritableState = WritableState;
 
 /*<replacement>*/
-var util = Object.create(__webpack_require__(19));
+var util = Object.create(__webpack_require__(22));
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -13237,7 +13237,7 @@ defineCurve('secp256k1', {
 var hash = exports;
 
 hash.utils = __webpack_require__(9);
-hash.common = __webpack_require__(21);
+hash.common = __webpack_require__(24);
 hash.sha = __webpack_require__(143);
 hash.ripemd = __webpack_require__(147);
 hash.hmac = __webpack_require__(148);
@@ -13577,15 +13577,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Convert = undefined;
 
-var _array = __webpack_require__(24);
+var _array = __webpack_require__(18);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(25);
+var _date = __webpack_require__(19);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
-var _string = __webpack_require__(26);
+var _string = __webpack_require__(20);
 
 var lib_proto_string = _interopRequireWildcard(_string);
 
@@ -13968,7 +13968,7 @@ function _isUint8Array(obj) {
 /*</replacement>*/
 
 /*<replacement>*/
-var util = Object.create(__webpack_require__(19));
+var util = Object.create(__webpack_require__(22));
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -15085,7 +15085,7 @@ module.exports = Transform;
 var Duplex = __webpack_require__(12);
 
 /*<replacement>*/
-var util = Object.create(__webpack_require__(19));
+var util = Object.create(__webpack_require__(22));
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -16309,7 +16309,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
 /* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var xor = __webpack_require__(20)
+var xor = __webpack_require__(23)
 var Buffer = __webpack_require__(1).Buffer
 var incr32 = __webpack_require__(72)
 
@@ -16377,7 +16377,7 @@ var Buffer = __webpack_require__(1).Buffer
 var Transform = __webpack_require__(11)
 var inherits = __webpack_require__(0)
 var GHASH = __webpack_require__(128)
-var xor = __webpack_require__(20)
+var xor = __webpack_require__(23)
 var incr32 = __webpack_require__(72)
 
 function xorTest (a, b) {
@@ -16900,7 +16900,7 @@ exports.g1_256 = g1_256;
 
 
 var utils = __webpack_require__(9);
-var common = __webpack_require__(21);
+var common = __webpack_require__(24);
 var shaCommon = __webpack_require__(80);
 var assert = __webpack_require__(6);
 
@@ -17012,7 +17012,7 @@ SHA256.prototype._digest = function digest(enc) {
 
 
 var utils = __webpack_require__(9);
-var common = __webpack_require__(21);
+var common = __webpack_require__(24);
 var assert = __webpack_require__(6);
 
 var rotr64_hi = utils.rotr64_hi;
@@ -17346,7 +17346,7 @@ function g1_512_lo(xh, xl) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(0);
-var Reporter = __webpack_require__(23).Reporter;
+var Reporter = __webpack_require__(26).Reporter;
 var Buffer = __webpack_require__(4).Buffer;
 
 function DecoderBuffer(base, options) {
@@ -17494,7 +17494,7 @@ constants.der = __webpack_require__(162);
 
 var inherits = __webpack_require__(0);
 
-var asn1 = __webpack_require__(22);
+var asn1 = __webpack_require__(25);
 var base = asn1.base;
 var bignum = asn1.bignum;
 
@@ -17825,7 +17825,7 @@ function derDecodeLen(buf, primitive, fail) {
 var inherits = __webpack_require__(0);
 var Buffer = __webpack_require__(4).Buffer;
 
-var asn1 = __webpack_require__(22);
+var asn1 = __webpack_require__(25);
 var base = asn1.base;
 
 // Import DER constants
@@ -18129,7 +18129,7 @@ module.exports = {"1.3.132.0.10":"secp256k1","1.3.132.0.33":"p224","1.2.840.1004
 /* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createHash = __webpack_require__(18)
+var createHash = __webpack_require__(21)
 var Buffer = __webpack_require__(1).Buffer
 
 module.exports = function (seed, len) {
@@ -18729,15 +18729,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Comm = undefined;
 
-var _array = __webpack_require__(24);
+var _array = __webpack_require__(18);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(25);
+var _date = __webpack_require__(19);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
-var _string = __webpack_require__(26);
+var _string = __webpack_require__(20);
 
 var lib_proto_string = _interopRequireWildcard(_string);
 
@@ -18747,9 +18747,11 @@ var _convert = __webpack_require__(54);
 
 var _random = __webpack_require__(199);
 
+var _url = __webpack_require__(200);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-window.Comm = { Verify: _verify.Verify, Convert: _convert.Convert, Random: _random.Random };
+window.Comm = { Verify: _verify.Verify, Convert: _convert.Convert, Random: _random.Random, Url: _url.Url };
 var Comm = exports.Comm = window.Comm;
 
 /***/ }),
@@ -19032,7 +19034,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = __webpack_require__(14)
-exports.createHash = exports.Hash = __webpack_require__(18)
+exports.createHash = exports.Hash = __webpack_require__(21)
 exports.createHmac = exports.Hmac = __webpack_require__(62)
 
 var algos = __webpack_require__(114)
@@ -19599,7 +19601,7 @@ module.exports = PassThrough;
 var Transform = __webpack_require__(59);
 
 /*<replacement>*/
-var util = Object.create(__webpack_require__(19));
+var util = Object.create(__webpack_require__(22));
 util.inherits = __webpack_require__(0);
 /*</replacement>*/
 
@@ -20550,7 +20552,7 @@ exports.decrypt = function (self, block) {
 /* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var xor = __webpack_require__(20)
+var xor = __webpack_require__(23)
 
 exports.encrypt = function (self, block) {
   var data = xor(block, self._prev)
@@ -20574,7 +20576,7 @@ exports.decrypt = function (self, block) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(1).Buffer
-var xor = __webpack_require__(20)
+var xor = __webpack_require__(23)
 
 function encryptStart (self, data, decrypt) {
   var len = data.length
@@ -20691,7 +20693,7 @@ exports.encrypt = function (self, chunk, decrypt) {
 /* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var xor = __webpack_require__(20)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var xor = __webpack_require__(23)
 
 function getBlock (self) {
   self._prev = self._cipher.encryptBlock(self._prev)
@@ -21235,7 +21237,7 @@ function formatReturnValue(bn, enc) {
 /* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(18)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(21)
 var stream = __webpack_require__(35)
 var inherits = __webpack_require__(0)
 var sign = __webpack_require__(138)
@@ -23077,7 +23079,7 @@ exports.sha512 = __webpack_require__(82);
 
 
 var utils = __webpack_require__(9);
-var common = __webpack_require__(21);
+var common = __webpack_require__(24);
 var shaCommon = __webpack_require__(80);
 
 var rotl32 = utils.rotl32;
@@ -23237,7 +23239,7 @@ SHA384.prototype._digest = function digest(enc) {
 
 
 var utils = __webpack_require__(9);
-var common = __webpack_require__(21);
+var common = __webpack_require__(24);
 
 var rotl32 = utils.rotl32;
 var sum32 = utils.sum32;
@@ -25164,7 +25166,7 @@ module.exports = Signature;
 // Fedor, you are amazing.
 
 
-var asn1 = __webpack_require__(22)
+var asn1 = __webpack_require__(25)
 
 exports.certificate = __webpack_require__(167)
 
@@ -25288,7 +25290,7 @@ exports.signature = asn1.define('signature', function () {
 /* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var asn1 = __webpack_require__(22);
+var asn1 = __webpack_require__(25);
 var inherits = __webpack_require__(0);
 
 var api = exports;
@@ -25637,9 +25639,9 @@ ReporterError.prototype.rethrow = function rethrow(msg) {
 /* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Reporter = __webpack_require__(23).Reporter;
-var EncoderBuffer = __webpack_require__(23).EncoderBuffer;
-var DecoderBuffer = __webpack_require__(23).DecoderBuffer;
+var Reporter = __webpack_require__(26).Reporter;
+var EncoderBuffer = __webpack_require__(26).EncoderBuffer;
+var DecoderBuffer = __webpack_require__(26).DecoderBuffer;
 var assert = __webpack_require__(6);
 
 // Supported tags
@@ -26433,7 +26435,7 @@ PEMEncoder.prototype.encode = function encode(data, options) {
 
 
 
-var asn = __webpack_require__(22)
+var asn = __webpack_require__(25)
 
 var Time = asn.define('Time', function () {
   this.choice({
@@ -26805,7 +26807,7 @@ exports.publicDecrypt = function publicDecrypt (key, buf) {
 
 var parseKeys = __webpack_require__(31)
 var randomBytes = __webpack_require__(14)
-var createHash = __webpack_require__(18)
+var createHash = __webpack_require__(21)
 var mgf = __webpack_require__(88)
 var xor = __webpack_require__(89)
 var BN = __webpack_require__(3)
@@ -26902,7 +26904,7 @@ var mgf = __webpack_require__(88)
 var xor = __webpack_require__(89)
 var BN = __webpack_require__(3)
 var crt = __webpack_require__(47)
-var createHash = __webpack_require__(18)
+var createHash = __webpack_require__(21)
 var withPublic = __webpack_require__(90)
 var Buffer = __webpack_require__(1).Buffer
 
@@ -30531,15 +30533,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Random = undefined;
 
-var _array = __webpack_require__(24);
+var _array = __webpack_require__(18);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(25);
+var _date = __webpack_require__(19);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
-var _string = __webpack_require__(26);
+var _string = __webpack_require__(20);
 
 var lib_proto_string = _interopRequireWildcard(_string);
 
@@ -30575,6 +30577,62 @@ var Random = exports.Random = {
         var Range = Max - Min;
         var Rand = Math.random();
         return Min + Math.round(Rand * Range);
+    }
+};
+
+/***/ }),
+/* 200 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Url = undefined;
+
+var _array = __webpack_require__(18);
+
+var lib_proto_array = _interopRequireWildcard(_array);
+
+var _date = __webpack_require__(19);
+
+var lib_proto_date = _interopRequireWildcard(_date);
+
+var _string = __webpack_require__(20);
+
+var lib_proto_string = _interopRequireWildcard(_string);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var Url = exports.Url = {
+    /**
+     * 获取地址栏的参数值
+     * @param {String} name 参数名称
+     * @param {String} search &连接的参数键值
+     * @returns
+     */
+    getParams: function getParams(name, search) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = (search || window.location.search).substr(1).match(reg);
+        if (r != null) return unescape(r[2]);return null;
+    },
+    /**
+     * 转换地址栏参数
+     * @param {String} url
+     * @returns
+     */
+    convert: function convert(url) {
+        url = (url || window.location.href).split('?');
+        url = url[url.length - 1];
+        url = url.split('&');
+        var params = {};
+        for (var i = 0; i < url.length; i++) {
+            var tmp = url[i].split('=');
+            params[tmp[0]] = tmp[1];
+        }
+        return params;
     }
 };
 
