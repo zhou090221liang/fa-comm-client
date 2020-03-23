@@ -3,7 +3,7 @@ module.exports = {
     entry: path.join(__dirname, '../src/'),
     output: {
         path: path.join(__dirname, '../dist/'),        //__dirname是一个nodejs变量，表示当前js文件所在的目录
-        filename: 'index.js'
+        filename: 'comm.js'
     },
     module: {
         loaders: [
