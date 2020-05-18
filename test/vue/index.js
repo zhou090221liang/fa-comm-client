@@ -15,4 +15,3 @@ console.log("格式化字符串", str, str.format("20150616001", "06月20日"));
 var json = '{"a":"a"}';
 json = Comm.Convert.toJson(json);
 console.log("转JSON对象", typeof json, json);
-
