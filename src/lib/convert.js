@@ -145,9 +145,9 @@ export const Convert = {
         }
         else if (Verify.isError(obj)) {
             return JSON.stringify({
-                code: arg.code || null,
-                message: arg.message || null,
-                stack: arg.stack || null
+                code: obj.code || null,
+                message: obj.message || null,
+                stack: obj.stack || null
             });
         }
         else if (Verify.isArray(obj)) {
