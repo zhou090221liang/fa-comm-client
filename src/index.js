@@ -6,5 +6,13 @@ import { Convert } from './lib/convert';
 import { Random } from './lib/random';
 import { Url } from './lib/url';
 
-window.Comm = { Verify, Convert, Random, Url };
-export const Comm = window.Comm;
+const _Comm = {
+    Verify,
+    Convert,
+    Random,
+    Url
+};
+try {
+    window.Comm = _Comm;
+} catch (e) { }
+export const Comm = _Comm;

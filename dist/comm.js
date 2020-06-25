@@ -17979,7 +17979,13 @@ var Convert = exports.Convert = {
                 r = obj.toString();
             }
             return r;
-        } else if (_verify.Verify.isError(obj)) return obj.stack || obj.message || '';else if (_verify.Verify.isArray(obj)) {
+        } else if (_verify.Verify.isError(obj)) {
+            return JSON.stringify({
+                code: arg.code || null,
+                message: arg.message || null,
+                stack: arg.stack || null
+            });
+        } else if (_verify.Verify.isArray(obj)) {
             var arr = new Array();
             for (var i in obj) {
                 arr.push(toString(i));
@@ -17988,7 +17994,16 @@ var Convert = exports.Convert = {
         } else if (_verify.Verify.isDate(obj)) return obj.format('yyyy-MM-dd hh:mm:ss');else {
             return obj.toString();
         }
-    })
+    }),
+    /** 
+     * 将字节大小转换成直观的单位显示
+    */
+    sizeFormat: function sizeFormat(fileByte) {
+        var fileSizeByte = fileByte;
+        var fileSizeMsg = "";
+        if (fileSizeByte < 1048576) fileSizeMsg = (fileSizeByte / 1024).toFixed(2) + "KB";else if (fileSizeByte == 1048576) fileSizeMsg = "1MB";else if (fileSizeByte > 1048576 && fileSizeByte < 1073741824) fileSizeMsg = (fileSizeByte / (1024 * 1024)).toFixed(2) + "MB";else if (fileSizeByte > 1048576 && fileSizeByte == 1073741824) fileSizeMsg = "1GB";else if (fileSizeByte > 1073741824 && fileSizeByte < 1099511627776) fileSizeMsg = (fileSizeByte / (1024 * 1024 * 1024)).toFixed(2) + "GB";else fileSizeMsg = ">1TB";
+        return fileSizeMsg;
+    }
 };
 
 /***/ }),
@@ -34304,7 +34319,7 @@ module.exports = withPublic
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 exports.Comm = undefined;
 
@@ -34330,8 +34345,16 @@ var _url = __webpack_require__(250);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-window.Comm = { Verify: _verify.Verify, Convert: _convert.Convert, Random: _random.Random, Url: _url.Url };
-var Comm = exports.Comm = window.Comm;
+var _Comm = {
+    Verify: _verify.Verify,
+    Convert: _convert.Convert,
+    Random: _random.Random,
+    Url: _url.Url
+};
+try {
+    window.Comm = _Comm;
+} catch (e) {}
+var Comm = exports.Comm = _Comm;
 
 /***/ }),
 /* 117 */

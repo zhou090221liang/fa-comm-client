@@ -143,8 +143,13 @@ export const Convert = {
             }
             return r;
         }
-        else if (Verify.isError(obj))
-            return obj.stack || (obj.message || '');
+        else if (Verify.isError(obj)) {
+            return JSON.stringify({
+                code: arg.code || null,
+                message: arg.message || null,
+                stack: arg.stack || null
+            });
+        }
         else if (Verify.isArray(obj)) {
             let arr = new Array();
             for (var i in obj) {
@@ -157,5 +162,21 @@ export const Convert = {
         else {
             return obj.toString();
         }
+    },
+    /** 
+     * 将字节大小转换成直观的单位显示
+    */
+    sizeFormat: (fileByte) => {
+        var fileSizeByte = fileByte;
+        var fileSizeMsg = "";
+        if (fileSizeByte < 1048576) fileSizeMsg = (fileSizeByte / 1024).toFixed(2) + "KB";
+        else if (fileSizeByte == 1048576) fileSizeMsg = "1MB";
+        else if (fileSizeByte > 1048576 && fileSizeByte < 1073741824) fileSizeMsg = (fileSizeByte / (1024 * 1024)).toFixed(2) +
+            "MB";
+        else if (fileSizeByte > 1048576 && fileSizeByte == 1073741824) fileSizeMsg = "1GB";
+        else if (fileSizeByte > 1073741824 && fileSizeByte < 1099511627776) fileSizeMsg = (fileSizeByte / (1024 * 1024 * 1024))
+            .toFixed(2) + "GB";
+        else fileSizeMsg = ">1TB";
+        return fileSizeMsg;
     }
 }
