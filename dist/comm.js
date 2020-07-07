@@ -8913,6 +8913,351 @@ Duplex.prototype._destroy = function (err, cb) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+/**
+ * 在数组的指定位置插入元素
+ * @param {*} index 指定位置下标，默认第一位
+ * @param {*} item 要插入的元素
+ */
+Array.prototype.insert = function () {
+  var item = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
+  var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+  this.splice(index > -1 ? index : 0, 0, item);
+};
+
+/**
+ * 移除数组的某个元素
+ * @param {*} index 要移除元素的下标
+ */
+Array.prototype.remove = function (index) {
+  this.splice(index > -1 ? index : 0, 1);
+};
+
+/**
+ * 移除数组的第一个元素
+ */
+Array.prototype.removeFirst = function () {
+  this.splice(0, 1);
+};
+
+/**
+ * 移除数组的最后一个元素
+ */
+Array.prototype.removeLast = function () {
+  var index = this.length - 1;
+  this.splice(index > -1 ? index : 0, 1);
+};
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * 对Date的扩展，将 Date 转化为指定格式的String
+ * 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+ * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+ * @param {String} fmt 格式字符串
+ * @returns
+ */
+Date.prototype.format = Date.prototype.Format = function (fmt) {
+    if (!fmt) {
+        fmt = "yyyy-MM-dd hh:mm:ss";
+    }
+    var o = {
+        "M+": this.getMonth() + 1, //月份 
+        "d+": this.getDate(), //日 
+        "h+": this.getHours(), //小时 
+        "m+": this.getMinutes(), //分 
+        "s+": this.getSeconds(), //秒 
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o) {
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+    }return fmt;
+};
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(Buffer) {
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; // import * as lib_proto_array from './array';
+// import * as lib_proto_date from './date';
+
+// import sha1 from 'crypto-js/sha1';
+// import md5 from 'crypto-js/md5';
+// import aes from 'crypto-js/aes';
+
+
+var _verify = __webpack_require__(40);
+
+var _convert = __webpack_require__(62);
+
+var _cryptoJs = __webpack_require__(119);
+
+var CryptoJS = _interopRequireWildcard(_cryptoJs);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+/**
+ * 格式化字符串
+ * 例:var str = "您的订单{0}已经提交成功，预计{1}送达";str = str.format("20150616001","06月20日");
+ * @param {*} args 多个需要格式化的参数值
+ * @returns
+ */
+String.prototype.format = String.prototype.Format = function (args) {
+    var result = this;
+    if (arguments.length > 0) {
+        if (arguments.length == 1 && (typeof args === 'undefined' ? 'undefined' : _typeof(args)) == "object") {
+            for (var key in args) {
+                if (args[key] != undefined) {
+                    var reg = new RegExp("({" + key + "})", "g");
+                    result = result.replace(reg, args[key]);
+                }
+            }
+        } else {
+            for (var i = 0; i < arguments.length; i++) {
+                if (arguments[i] != undefined) {
+                    var reg = new RegExp("({)" + i + "(})", "g");
+                    result = result.replace(reg, arguments[i]);
+                }
+            }
+        }
+    }
+    return result;
+};
+
+/**
+ * 原型函数 获取字符串字节长度
+ * @returns
+ */
+String.prototype.getByteLength = function () {
+    var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+    return version === 1 ? this.replace(/[^\x00-\xff]/g, "**").length : Buffer.from(this).length;
+};
+
+/**
+ * 原型函数 去除前后空格
+ * @returns
+ */
+String.prototype.trim = String.prototype.Trim = function () {
+    return this.replace(/(^\s*)|(\s*$)/g, "");
+};
+
+/**
+ * 原型函数 去除前面的空格
+ * @returns
+ */
+String.prototype.ltrim = String.prototype.Ltrim = String.prototype.LTrim = function () {
+    return this.replace(/(^\s*)/g, "");
+};
+
+/**
+ * 原型函数 去除后面的空格
+ * @returns
+ */
+String.prototype.rtrim = String.prototype.Rtrim = String.prototype.RTrim = function () {
+    return this.replace(/(\s*$)/g, "");
+};
+
+/**
+ * 原型函数 字符串结尾是否包含指定字符串
+ * @param {*} str
+ * @returns
+ */
+String.prototype.endWith = String.prototype.EndWith = function (str) {
+    if (str == null || str == "" || this.length == 0 || str.length > this.length) return false;
+    if (this.substring(this.length - str.length) == str) return true;else return false;
+};
+
+/**
+ * 原型函数 字符串开头是否包含指定字符串
+ * @param {*} str
+ * @returns
+ */
+String.prototype.startWith = String.prototype.StartWith = function (str) {
+    if (str == null || str == "" || this.length == 0 || str.length > this.length) return false;
+    if (this.substr(0, str.length) == str) return true;else return false;
+};
+
+/**
+ * 是否中国手机号码
+ * @returns
+ */
+String.prototype.isChineseCellphone = function () {
+    var reg = /^0?1[3|4|5|7|8|9][0-9]\d{8}$/;
+    if (reg.test(this)) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+/**
+ * 是否邮箱地址
+ * @returns
+ */
+String.prototype.isEmailAddress = function () {
+    var pattern = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
+    if (!pattern.test(this)) {
+        return false;
+    }
+    return true;
+};
+
+/**
+ * 是否QQ号码
+ * @returns
+ */
+String.prototype.isQqNumber = function () {
+    var pattern = /^[0-9]{5,10}$/;
+    if (!pattern.test(this)) {
+        return false;
+    }
+    return true;
+};
+
+/**
+ * 是否MD5
+ * @returns
+ */
+String.prototype.isMd5 = function () {
+    var pattern1 = /^([a-fA-F0-9]{32})$/;
+    var pattern2 = /^([a-fA-F0-9]{16})$/;
+    if (!pattern1.test(this) && !pattern2.test(this)) {
+        return false;
+    }
+    return true;
+};
+
+/**
+ * 是否URL
+ * @returns
+ */
+String.prototype.isUrl = function () {
+    var reg = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
+    if (reg.test(this)) return true;
+    return false;
+};
+
+/**
+ * 是否Guid
+ * @returns
+ */
+String.prototype.isGuid = function () {
+    var reg = /^[0-9a-f]{8}[0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{12}$/;
+    if (reg.test(this)) return true;
+    reg = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+    if (reg.test(this)) return true;
+    reg = /^\{[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\}$/;
+    if (reg.test(this)) return true;
+    return false;
+};
+
+/**
+ * 是否中国居民身份证号
+ * @param {number} [version=1] 
+ * @returns
+ */
+String.prototype.isChineseCitizenIdCardNumber = function () {
+    var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+    return version === 1 ? _verify.Verify.isChineseCitizenIdCardNumber(this).errcode == 0 : _verify.Verify.isChineseCitizenIdCardNumber(this);
+};
+
+/**
+ * 转Base64
+ * @returns
+ */
+String.prototype.toBase64 = function () {
+    return new Buffer(this).toString('base64');
+};
+
+/**
+ * 解Base64
+ * @returns
+ */
+String.prototype.fromBase64 = function () {
+    return new Buffer(this, 'base64').toString();
+};
+
+/**
+ * GBK转UTF8
+ * @returns
+ */
+String.prototype.fromGbk = function () {
+    return unescape(this.replace(/&#x/g, '%u').replace(/;/g, ''));
+};
+
+/**
+ * 下划线转换驼峰
+ * @returns
+ */
+String.prototype.toHump = function () {
+    return this.replace(/\_(\w)/g, function (all, letter) {
+        return letter.toUpperCase();
+    });
+};
+
+/**
+ * 驼峰转换下划线
+ * @returns
+ */
+String.prototype.toLine = function () {
+    return this.replace(/([A-Z])/g, "_$1").toLowerCase();
+};
+
+/**
+ * SHA1加密
+ * @returns
+ */
+String.prototype.sha1 = String.prototype.toSha1 = function () {
+    var msg = _convert.Convert.toString(this);
+    return CryptoJS.SHA1(msg).toString();
+};
+
+/**
+ * MD5加密
+ * @param {String} str 要加密的数据
+ */
+String.prototype.md5 = String.prototype.toMd5 = function () {
+    var msg = _convert.Convert.toString(this);
+    return CryptoJS.MD5(msg).toString();
+};
+
+// /**
+//  * AES加密
+//  * @param {String} password 8位小写英文字母密钥
+//  */
+// String.prototype.aes = String.prototype.toAes = function (password = "aespasswd") {
+//     let msg = Convert.toString(this);
+//     return CryptoJS.AES.encrypt(msg, password).toString();
+// }
+
+// /**
+//  * AES解密
+//  * @param {String} password 8位小写英文字母密钥
+//  */
+// String.prototype.fromAes = function (password = "aespasswd") {
+//     return CryptoJS.AES.decrypt(this, password).toString();
+// }
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).Buffer))
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(global, process) {
 
 // limit of Crypto.getRandomValues()
@@ -8965,373 +9310,6 @@ function randomBytes (size, cb) {
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(4)))
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
-
-var codes = {};
-
-function createErrorType(code, message, Base) {
-  if (!Base) {
-    Base = Error;
-  }
-
-  function getMessage(arg1, arg2, arg3) {
-    if (typeof message === 'string') {
-      return message;
-    } else {
-      return message(arg1, arg2, arg3);
-    }
-  }
-
-  var NodeError =
-  /*#__PURE__*/
-  function (_Base) {
-    _inheritsLoose(NodeError, _Base);
-
-    function NodeError(arg1, arg2, arg3) {
-      return _Base.call(this, getMessage(arg1, arg2, arg3)) || this;
-    }
-
-    return NodeError;
-  }(Base);
-
-  NodeError.prototype.name = Base.name;
-  NodeError.prototype.code = code;
-  codes[code] = NodeError;
-} // https://github.com/nodejs/node/blob/v10.8.0/lib/internal/errors.js
-
-
-function oneOf(expected, thing) {
-  if (Array.isArray(expected)) {
-    var len = expected.length;
-    expected = expected.map(function (i) {
-      return String(i);
-    });
-
-    if (len > 2) {
-      return "one of ".concat(thing, " ").concat(expected.slice(0, len - 1).join(', '), ", or ") + expected[len - 1];
-    } else if (len === 2) {
-      return "one of ".concat(thing, " ").concat(expected[0], " or ").concat(expected[1]);
-    } else {
-      return "of ".concat(thing, " ").concat(expected[0]);
-    }
-  } else {
-    return "of ".concat(thing, " ").concat(String(expected));
-  }
-} // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
-
-
-function startsWith(str, search, pos) {
-  return str.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
-} // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
-
-
-function endsWith(str, search, this_len) {
-  if (this_len === undefined || this_len > str.length) {
-    this_len = str.length;
-  }
-
-  return str.substring(this_len - search.length, this_len) === search;
-} // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
-
-
-function includes(str, search, start) {
-  if (typeof start !== 'number') {
-    start = 0;
-  }
-
-  if (start + search.length > str.length) {
-    return false;
-  } else {
-    return str.indexOf(search, start) !== -1;
-  }
-}
-
-createErrorType('ERR_INVALID_OPT_VALUE', function (name, value) {
-  return 'The value "' + value + '" is invalid for option "' + name + '"';
-}, TypeError);
-createErrorType('ERR_INVALID_ARG_TYPE', function (name, expected, actual) {
-  // determiner: 'must be' or 'must not be'
-  var determiner;
-
-  if (typeof expected === 'string' && startsWith(expected, 'not ')) {
-    determiner = 'must not be';
-    expected = expected.replace(/^not /, '');
-  } else {
-    determiner = 'must be';
-  }
-
-  var msg;
-
-  if (endsWith(name, ' argument')) {
-    // For cases like 'first argument'
-    msg = "The ".concat(name, " ").concat(determiner, " ").concat(oneOf(expected, 'type'));
-  } else {
-    var type = includes(name, '.') ? 'property' : 'argument';
-    msg = "The \"".concat(name, "\" ").concat(type, " ").concat(determiner, " ").concat(oneOf(expected, 'type'));
-  }
-
-  msg += ". Received type ".concat(typeof actual);
-  return msg;
-}, TypeError);
-createErrorType('ERR_STREAM_PUSH_AFTER_EOF', 'stream.push() after EOF');
-createErrorType('ERR_METHOD_NOT_IMPLEMENTED', function (name) {
-  return 'The ' + name + ' method is not implemented';
-});
-createErrorType('ERR_STREAM_PREMATURE_CLOSE', 'Premature close');
-createErrorType('ERR_STREAM_DESTROYED', function (name) {
-  return 'Cannot call ' + name + ' after a stream was destroyed';
-});
-createErrorType('ERR_MULTIPLE_CALLBACK', 'Callback called multiple times');
-createErrorType('ERR_STREAM_CANNOT_PIPE', 'Cannot pipe, not readable');
-createErrorType('ERR_STREAM_WRITE_AFTER_END', 'write after end');
-createErrorType('ERR_STREAM_NULL_VALUES', 'May not write null values to stream', TypeError);
-createErrorType('ERR_UNKNOWN_ENCODING', function (arg) {
-  return 'Unknown encoding: ' + arg;
-}, TypeError);
-createErrorType('ERR_STREAM_UNSHIFT_AFTER_END_EVENT', 'stream.unshift() after end event');
-module.exports.codes = codes;
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-// a duplex stream is just a stream that is both readable and writable.
-// Since JS doesn't have multiple prototypal inheritance, this class
-// prototypally inherits from Readable, and then parasitically from
-// Writable.
-
-/*<replacement>*/
-
-var objectKeys = Object.keys || function (obj) {
-  var keys = [];
-
-  for (var key in obj) {
-    keys.push(key);
-  }
-
-  return keys;
-};
-/*</replacement>*/
-
-
-module.exports = Duplex;
-
-var Readable = __webpack_require__(64);
-
-var Writable = __webpack_require__(68);
-
-__webpack_require__(0)(Duplex, Readable);
-
-{
-  // Allow the keys array to be GC'ed.
-  var keys = objectKeys(Writable.prototype);
-
-  for (var v = 0; v < keys.length; v++) {
-    var method = keys[v];
-    if (!Duplex.prototype[method]) Duplex.prototype[method] = Writable.prototype[method];
-  }
-}
-
-function Duplex(options) {
-  if (!(this instanceof Duplex)) return new Duplex(options);
-  Readable.call(this, options);
-  Writable.call(this, options);
-  this.allowHalfOpen = true;
-
-  if (options) {
-    if (options.readable === false) this.readable = false;
-    if (options.writable === false) this.writable = false;
-
-    if (options.allowHalfOpen === false) {
-      this.allowHalfOpen = false;
-      this.once('end', onend);
-    }
-  }
-}
-
-Object.defineProperty(Duplex.prototype, 'writableHighWaterMark', {
-  // making it explicit this property is not enumerable
-  // because otherwise some prototype manipulation in
-  // userland will fail
-  enumerable: false,
-  get: function get() {
-    return this._writableState.highWaterMark;
-  }
-});
-Object.defineProperty(Duplex.prototype, 'writableBuffer', {
-  // making it explicit this property is not enumerable
-  // because otherwise some prototype manipulation in
-  // userland will fail
-  enumerable: false,
-  get: function get() {
-    return this._writableState && this._writableState.getBuffer();
-  }
-});
-Object.defineProperty(Duplex.prototype, 'writableLength', {
-  // making it explicit this property is not enumerable
-  // because otherwise some prototype manipulation in
-  // userland will fail
-  enumerable: false,
-  get: function get() {
-    return this._writableState.length;
-  }
-}); // the no-half-open enforcer
-
-function onend() {
-  // If the writable side ended, then we're ok.
-  if (this._writableState.ended) return; // no more data can be written.
-  // But allow more writes to happen in this tick.
-
-  process.nextTick(onEndNT, this);
-}
-
-function onEndNT(self) {
-  self.end();
-}
-
-Object.defineProperty(Duplex.prototype, 'destroyed', {
-  // making it explicit this property is not enumerable
-  // because otherwise some prototype manipulation in
-  // userland will fail
-  enumerable: false,
-  get: function get() {
-    if (this._readableState === undefined || this._writableState === undefined) {
-      return false;
-    }
-
-    return this._readableState.destroyed && this._writableState.destroyed;
-  },
-  set: function set(value) {
-    // we ignore the value if the stream
-    // has not been initialized yet
-    if (this._readableState === undefined || this._writableState === undefined) {
-      return;
-    } // backward compatibility, the user is explicitly
-    // managing destroyed
-
-
-    this._readableState.destroyed = value;
-    this._writableState.destroyed = value;
-  }
-});
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Buffer = __webpack_require__(1).Buffer
-
-// prototype class for hash functions
-function Hash (blockSize, finalSize) {
-  this._block = Buffer.alloc(blockSize)
-  this._finalSize = finalSize
-  this._blockSize = blockSize
-  this._len = 0
-}
-
-Hash.prototype.update = function (data, enc) {
-  if (typeof data === 'string') {
-    enc = enc || 'utf8'
-    data = Buffer.from(data, enc)
-  }
-
-  var block = this._block
-  var blockSize = this._blockSize
-  var length = data.length
-  var accum = this._len
-
-  for (var offset = 0; offset < length;) {
-    var assigned = accum % blockSize
-    var remainder = Math.min(length - offset, blockSize - assigned)
-
-    for (var i = 0; i < remainder; i++) {
-      block[assigned + i] = data[offset + i]
-    }
-
-    accum += remainder
-    offset += remainder
-
-    if ((accum % blockSize) === 0) {
-      this._update(block)
-    }
-  }
-
-  this._len += length
-  return this
-}
-
-Hash.prototype.digest = function (enc) {
-  var rem = this._len % this._blockSize
-
-  this._block[rem] = 0x80
-
-  // zero (rem + 1) trailing bits, where (rem + 1) is the smallest
-  // non-negative solution to the equation (length + 1 + (rem + 1)) === finalSize mod blockSize
-  this._block.fill(0, rem + 1)
-
-  if (rem >= this._finalSize) {
-    this._update(this._block)
-    this._block.fill(0)
-  }
-
-  var bits = this._len * 8
-
-  // uint32
-  if (bits <= 0xffffffff) {
-    this._block.writeUInt32BE(bits, this._blockSize - 4)
-
-  // uint64
-  } else {
-    var lowBits = (bits & 0xffffffff) >>> 0
-    var highBits = (bits - lowBits) / 0x100000000
-
-    this._block.writeUInt32BE(highBits, this._blockSize - 8)
-    this._block.writeUInt32BE(lowBits, this._blockSize - 4)
-  }
-
-  this._update(this._block)
-  var hash = this._hash()
-
-  return enc ? hash.toString(enc) : hash
-}
-
-Hash.prototype._update = function () {
-  throw new Error('_update must be implemented by subclass')
-}
-
-module.exports = Hash
-
 
 /***/ }),
 /* 21 */
@@ -9513,6 +9491,373 @@ var objectKeys = Object.keys || function (obj) {
 
 module.exports = Duplex;
 
+var Readable = __webpack_require__(64);
+
+var Writable = __webpack_require__(68);
+
+__webpack_require__(0)(Duplex, Readable);
+
+{
+  // Allow the keys array to be GC'ed.
+  var keys = objectKeys(Writable.prototype);
+
+  for (var v = 0; v < keys.length; v++) {
+    var method = keys[v];
+    if (!Duplex.prototype[method]) Duplex.prototype[method] = Writable.prototype[method];
+  }
+}
+
+function Duplex(options) {
+  if (!(this instanceof Duplex)) return new Duplex(options);
+  Readable.call(this, options);
+  Writable.call(this, options);
+  this.allowHalfOpen = true;
+
+  if (options) {
+    if (options.readable === false) this.readable = false;
+    if (options.writable === false) this.writable = false;
+
+    if (options.allowHalfOpen === false) {
+      this.allowHalfOpen = false;
+      this.once('end', onend);
+    }
+  }
+}
+
+Object.defineProperty(Duplex.prototype, 'writableHighWaterMark', {
+  // making it explicit this property is not enumerable
+  // because otherwise some prototype manipulation in
+  // userland will fail
+  enumerable: false,
+  get: function get() {
+    return this._writableState.highWaterMark;
+  }
+});
+Object.defineProperty(Duplex.prototype, 'writableBuffer', {
+  // making it explicit this property is not enumerable
+  // because otherwise some prototype manipulation in
+  // userland will fail
+  enumerable: false,
+  get: function get() {
+    return this._writableState && this._writableState.getBuffer();
+  }
+});
+Object.defineProperty(Duplex.prototype, 'writableLength', {
+  // making it explicit this property is not enumerable
+  // because otherwise some prototype manipulation in
+  // userland will fail
+  enumerable: false,
+  get: function get() {
+    return this._writableState.length;
+  }
+}); // the no-half-open enforcer
+
+function onend() {
+  // If the writable side ended, then we're ok.
+  if (this._writableState.ended) return; // no more data can be written.
+  // But allow more writes to happen in this tick.
+
+  process.nextTick(onEndNT, this);
+}
+
+function onEndNT(self) {
+  self.end();
+}
+
+Object.defineProperty(Duplex.prototype, 'destroyed', {
+  // making it explicit this property is not enumerable
+  // because otherwise some prototype manipulation in
+  // userland will fail
+  enumerable: false,
+  get: function get() {
+    if (this._readableState === undefined || this._writableState === undefined) {
+      return false;
+    }
+
+    return this._readableState.destroyed && this._writableState.destroyed;
+  },
+  set: function set(value) {
+    // we ignore the value if the stream
+    // has not been initialized yet
+    if (this._readableState === undefined || this._writableState === undefined) {
+      return;
+    } // backward compatibility, the user is explicitly
+    // managing destroyed
+
+
+    this._readableState.destroyed = value;
+    this._writableState.destroyed = value;
+  }
+});
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Buffer = __webpack_require__(1).Buffer
+
+// prototype class for hash functions
+function Hash (blockSize, finalSize) {
+  this._block = Buffer.alloc(blockSize)
+  this._finalSize = finalSize
+  this._blockSize = blockSize
+  this._len = 0
+}
+
+Hash.prototype.update = function (data, enc) {
+  if (typeof data === 'string') {
+    enc = enc || 'utf8'
+    data = Buffer.from(data, enc)
+  }
+
+  var block = this._block
+  var blockSize = this._blockSize
+  var length = data.length
+  var accum = this._len
+
+  for (var offset = 0; offset < length;) {
+    var assigned = accum % blockSize
+    var remainder = Math.min(length - offset, blockSize - assigned)
+
+    for (var i = 0; i < remainder; i++) {
+      block[assigned + i] = data[offset + i]
+    }
+
+    accum += remainder
+    offset += remainder
+
+    if ((accum % blockSize) === 0) {
+      this._update(block)
+    }
+  }
+
+  this._len += length
+  return this
+}
+
+Hash.prototype.digest = function (enc) {
+  var rem = this._len % this._blockSize
+
+  this._block[rem] = 0x80
+
+  // zero (rem + 1) trailing bits, where (rem + 1) is the smallest
+  // non-negative solution to the equation (length + 1 + (rem + 1)) === finalSize mod blockSize
+  this._block.fill(0, rem + 1)
+
+  if (rem >= this._finalSize) {
+    this._update(this._block)
+    this._block.fill(0)
+  }
+
+  var bits = this._len * 8
+
+  // uint32
+  if (bits <= 0xffffffff) {
+    this._block.writeUInt32BE(bits, this._blockSize - 4)
+
+  // uint64
+  } else {
+    var lowBits = (bits & 0xffffffff) >>> 0
+    var highBits = (bits - lowBits) / 0x100000000
+
+    this._block.writeUInt32BE(highBits, this._blockSize - 8)
+    this._block.writeUInt32BE(lowBits, this._blockSize - 4)
+  }
+
+  this._update(this._block)
+  var hash = this._hash()
+
+  return enc ? hash.toString(enc) : hash
+}
+
+Hash.prototype._update = function () {
+  throw new Error('_update must be implemented by subclass')
+}
+
+module.exports = Hash
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
+
+var codes = {};
+
+function createErrorType(code, message, Base) {
+  if (!Base) {
+    Base = Error;
+  }
+
+  function getMessage(arg1, arg2, arg3) {
+    if (typeof message === 'string') {
+      return message;
+    } else {
+      return message(arg1, arg2, arg3);
+    }
+  }
+
+  var NodeError =
+  /*#__PURE__*/
+  function (_Base) {
+    _inheritsLoose(NodeError, _Base);
+
+    function NodeError(arg1, arg2, arg3) {
+      return _Base.call(this, getMessage(arg1, arg2, arg3)) || this;
+    }
+
+    return NodeError;
+  }(Base);
+
+  NodeError.prototype.name = Base.name;
+  NodeError.prototype.code = code;
+  codes[code] = NodeError;
+} // https://github.com/nodejs/node/blob/v10.8.0/lib/internal/errors.js
+
+
+function oneOf(expected, thing) {
+  if (Array.isArray(expected)) {
+    var len = expected.length;
+    expected = expected.map(function (i) {
+      return String(i);
+    });
+
+    if (len > 2) {
+      return "one of ".concat(thing, " ").concat(expected.slice(0, len - 1).join(', '), ", or ") + expected[len - 1];
+    } else if (len === 2) {
+      return "one of ".concat(thing, " ").concat(expected[0], " or ").concat(expected[1]);
+    } else {
+      return "of ".concat(thing, " ").concat(expected[0]);
+    }
+  } else {
+    return "of ".concat(thing, " ").concat(String(expected));
+  }
+} // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
+
+
+function startsWith(str, search, pos) {
+  return str.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
+} // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/endsWith
+
+
+function endsWith(str, search, this_len) {
+  if (this_len === undefined || this_len > str.length) {
+    this_len = str.length;
+  }
+
+  return str.substring(this_len - search.length, this_len) === search;
+} // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/includes
+
+
+function includes(str, search, start) {
+  if (typeof start !== 'number') {
+    start = 0;
+  }
+
+  if (start + search.length > str.length) {
+    return false;
+  } else {
+    return str.indexOf(search, start) !== -1;
+  }
+}
+
+createErrorType('ERR_INVALID_OPT_VALUE', function (name, value) {
+  return 'The value "' + value + '" is invalid for option "' + name + '"';
+}, TypeError);
+createErrorType('ERR_INVALID_ARG_TYPE', function (name, expected, actual) {
+  // determiner: 'must be' or 'must not be'
+  var determiner;
+
+  if (typeof expected === 'string' && startsWith(expected, 'not ')) {
+    determiner = 'must not be';
+    expected = expected.replace(/^not /, '');
+  } else {
+    determiner = 'must be';
+  }
+
+  var msg;
+
+  if (endsWith(name, ' argument')) {
+    // For cases like 'first argument'
+    msg = "The ".concat(name, " ").concat(determiner, " ").concat(oneOf(expected, 'type'));
+  } else {
+    var type = includes(name, '.') ? 'property' : 'argument';
+    msg = "The \"".concat(name, "\" ").concat(type, " ").concat(determiner, " ").concat(oneOf(expected, 'type'));
+  }
+
+  msg += ". Received type ".concat(typeof actual);
+  return msg;
+}, TypeError);
+createErrorType('ERR_STREAM_PUSH_AFTER_EOF', 'stream.push() after EOF');
+createErrorType('ERR_METHOD_NOT_IMPLEMENTED', function (name) {
+  return 'The ' + name + ' method is not implemented';
+});
+createErrorType('ERR_STREAM_PREMATURE_CLOSE', 'Premature close');
+createErrorType('ERR_STREAM_DESTROYED', function (name) {
+  return 'Cannot call ' + name + ' after a stream was destroyed';
+});
+createErrorType('ERR_MULTIPLE_CALLBACK', 'Callback called multiple times');
+createErrorType('ERR_STREAM_CANNOT_PIPE', 'Cannot pipe, not readable');
+createErrorType('ERR_STREAM_WRITE_AFTER_END', 'write after end');
+createErrorType('ERR_STREAM_NULL_VALUES', 'May not write null values to stream', TypeError);
+createErrorType('ERR_UNKNOWN_ENCODING', function (arg) {
+  return 'Unknown encoding: ' + arg;
+}, TypeError);
+createErrorType('ERR_STREAM_UNSHIFT_AFTER_END_EVENT', 'stream.unshift() after end event');
+module.exports.codes = codes;
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+// a duplex stream is just a stream that is both readable and writable.
+// Since JS doesn't have multiple prototypal inheritance, this class
+// prototypally inherits from Readable, and then parasitically from
+// Writable.
+
+/*<replacement>*/
+
+var objectKeys = Object.keys || function (obj) {
+  var keys = [];
+
+  for (var key in obj) {
+    keys.push(key);
+  }
+
+  return keys;
+};
+/*</replacement>*/
+
+
+module.exports = Duplex;
+
 var Readable = __webpack_require__(94);
 
 var Writable = __webpack_require__(98);
@@ -9614,7 +9959,7 @@ Object.defineProperty(Duplex.prototype, 'destroyed', {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory) {
@@ -9755,7 +10100,7 @@ Object.defineProperty(Duplex.prototype, 'destroyed', {
 }));
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory) {
@@ -10026,351 +10371,6 @@ Object.defineProperty(Duplex.prototype, 'destroyed', {
 	return CryptoJS.MD5;
 
 }));
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * 在数组的指定位置插入元素
- * @param {*} index 指定位置下标，默认第一位
- * @param {*} item 要插入的元素
- */
-Array.prototype.insert = function () {
-  var item = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : undefined;
-  var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-  this.splice(index > -1 ? index : 0, 0, item);
-};
-
-/**
- * 移除数组的某个元素
- * @param {*} index 要移除元素的下标
- */
-Array.prototype.remove = function (index) {
-  this.splice(index > -1 ? index : 0, 1);
-};
-
-/**
- * 移除数组的第一个元素
- */
-Array.prototype.removeFirst = function () {
-  this.splice(0, 1);
-};
-
-/**
- * 移除数组的最后一个元素
- */
-Array.prototype.removeLast = function () {
-  var index = this.length - 1;
-  this.splice(index > -1 ? index : 0, 1);
-};
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * 对Date的扩展，将 Date 转化为指定格式的String
- * 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
- * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
- * @param {String} fmt 格式字符串
- * @returns
- */
-Date.prototype.format = Date.prototype.Format = function (fmt) {
-    if (!fmt) {
-        fmt = "yyyy-MM-dd hh:mm:ss";
-    }
-    var o = {
-        "M+": this.getMonth() + 1, //月份 
-        "d+": this.getDate(), //日 
-        "h+": this.getHours(), //小时 
-        "m+": this.getMinutes(), //分 
-        "s+": this.getSeconds(), //秒 
-        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
-        "S": this.getMilliseconds() //毫秒 
-    };
-    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (var k in o) {
-        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
-    }return fmt;
-};
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(Buffer) {
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; // import * as lib_proto_array from './array';
-// import * as lib_proto_date from './date';
-
-// import sha1 from 'crypto-js/sha1';
-// import md5 from 'crypto-js/md5';
-// import aes from 'crypto-js/aes';
-
-
-var _verify = __webpack_require__(40);
-
-var _convert = __webpack_require__(62);
-
-var _cryptoJs = __webpack_require__(119);
-
-var CryptoJS = _interopRequireWildcard(_cryptoJs);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-/**
- * 格式化字符串
- * 例:var str = "您的订单{0}已经提交成功，预计{1}送达";str = str.format("20150616001","06月20日");
- * @param {*} args 多个需要格式化的参数值
- * @returns
- */
-String.prototype.format = String.prototype.Format = function (args) {
-    var result = this;
-    if (arguments.length > 0) {
-        if (arguments.length == 1 && (typeof args === 'undefined' ? 'undefined' : _typeof(args)) == "object") {
-            for (var key in args) {
-                if (args[key] != undefined) {
-                    var reg = new RegExp("({" + key + "})", "g");
-                    result = result.replace(reg, args[key]);
-                }
-            }
-        } else {
-            for (var i = 0; i < arguments.length; i++) {
-                if (arguments[i] != undefined) {
-                    var reg = new RegExp("({)" + i + "(})", "g");
-                    result = result.replace(reg, arguments[i]);
-                }
-            }
-        }
-    }
-    return result;
-};
-
-/**
- * 原型函数 获取字符串字节长度
- * @returns
- */
-String.prototype.getByteLength = function () {
-    var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-
-    return version === 1 ? this.replace(/[^\x00-\xff]/g, "**").length : Buffer.from(this).length;
-};
-
-/**
- * 原型函数 去除前后空格
- * @returns
- */
-String.prototype.trim = String.prototype.Trim = function () {
-    return this.replace(/(^\s*)|(\s*$)/g, "");
-};
-
-/**
- * 原型函数 去除前面的空格
- * @returns
- */
-String.prototype.ltrim = String.prototype.Ltrim = String.prototype.LTrim = function () {
-    return this.replace(/(^\s*)/g, "");
-};
-
-/**
- * 原型函数 去除后面的空格
- * @returns
- */
-String.prototype.rtrim = String.prototype.Rtrim = String.prototype.RTrim = function () {
-    return this.replace(/(\s*$)/g, "");
-};
-
-/**
- * 原型函数 字符串结尾是否包含指定字符串
- * @param {*} str
- * @returns
- */
-String.prototype.endWith = String.prototype.EndWith = function (str) {
-    if (str == null || str == "" || this.length == 0 || str.length > this.length) return false;
-    if (this.substring(this.length - str.length) == str) return true;else return false;
-};
-
-/**
- * 原型函数 字符串开头是否包含指定字符串
- * @param {*} str
- * @returns
- */
-String.prototype.startWith = String.prototype.StartWith = function (str) {
-    if (str == null || str == "" || this.length == 0 || str.length > this.length) return false;
-    if (this.substr(0, str.length) == str) return true;else return false;
-};
-
-/**
- * 是否中国手机号码
- * @returns
- */
-String.prototype.isChineseCellphone = function () {
-    var reg = /^0?1[3|4|5|7|8|9][0-9]\d{8}$/;
-    if (reg.test(this)) {
-        return true;
-    } else {
-        return false;
-    }
-};
-
-/**
- * 是否邮箱地址
- * @returns
- */
-String.prototype.isEmailAddress = function () {
-    var pattern = /^([\.a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;
-    if (!pattern.test(this)) {
-        return false;
-    }
-    return true;
-};
-
-/**
- * 是否QQ号码
- * @returns
- */
-String.prototype.isQqNumber = function () {
-    var pattern = /^[0-9]{5,10}$/;
-    if (!pattern.test(this)) {
-        return false;
-    }
-    return true;
-};
-
-/**
- * 是否MD5
- * @returns
- */
-String.prototype.isMd5 = function () {
-    var pattern1 = /^([a-fA-F0-9]{32})$/;
-    var pattern2 = /^([a-fA-F0-9]{16})$/;
-    if (!pattern1.test(this) && !pattern2.test(this)) {
-        return false;
-    }
-    return true;
-};
-
-/**
- * 是否URL
- * @returns
- */
-String.prototype.isUrl = function () {
-    var reg = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
-    if (reg.test(this)) return true;
-    return false;
-};
-
-/**
- * 是否Guid
- * @returns
- */
-String.prototype.isGuid = function () {
-    var reg = /^[0-9a-f]{8}[0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{4}[0-9a-f]{12}$/;
-    if (reg.test(this)) return true;
-    reg = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-    if (reg.test(this)) return true;
-    reg = /^\{[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\}$/;
-    if (reg.test(this)) return true;
-    return false;
-};
-
-/**
- * 是否中国居民身份证号
- * @param {number} [version=1] 
- * @returns
- */
-String.prototype.isChineseCitizenIdCardNumber = function () {
-    var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-
-    return version === 1 ? _verify.Verify.isChineseCitizenIdCardNumber(this).errcode == 0 : _verify.Verify.isChineseCitizenIdCardNumber(this);
-};
-
-/**
- * 转Base64
- * @returns
- */
-String.prototype.toBase64 = function () {
-    return new Buffer(this).toString('base64');
-};
-
-/**
- * 解Base64
- * @returns
- */
-String.prototype.fromBase64 = function () {
-    return new Buffer(this, 'base64').toString();
-};
-
-/**
- * GBK转UTF8
- * @returns
- */
-String.prototype.fromGbk = function () {
-    return unescape(this.replace(/&#x/g, '%u').replace(/;/g, ''));
-};
-
-/**
- * 下划线转换驼峰
- * @returns
- */
-String.prototype.toHump = function () {
-    return this.replace(/\_(\w)/g, function (all, letter) {
-        return letter.toUpperCase();
-    });
-};
-
-/**
- * 驼峰转换下划线
- * @returns
- */
-String.prototype.toLine = function () {
-    return this.replace(/([A-Z])/g, "_$1").toLowerCase();
-};
-
-/**
- * SHA1加密
- * @returns
- */
-String.prototype.sha1 = String.prototype.toSha1 = function () {
-    var msg = _convert.Convert.toString(this);
-    return CryptoJS.SHA1(msg).toString();
-};
-
-/**
- * MD5加密
- * @param {String} str 要加密的数据
- */
-String.prototype.md5 = String.prototype.toMd5 = function () {
-    var msg = _convert.Convert.toString(this);
-    return CryptoJS.MD5(msg).toString();
-};
-
-// /**
-//  * AES加密
-//  * @param {String} password 8位小写英文字母密钥
-//  */
-// String.prototype.aes = String.prototype.toAes = function (password = "aespasswd") {
-//     let msg = Convert.toString(this);
-//     return CryptoJS.AES.encrypt(msg, password).toString();
-// }
-
-// /**
-//  * AES解密
-//  * @param {String} password 8位小写英文字母密钥
-//  */
-// String.prototype.fromAes = function (password = "aespasswd") {
-//     return CryptoJS.AES.decrypt(this, password).toString();
-// }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3).Buffer))
 
 /***/ }),
 /* 28 */
@@ -11823,15 +11823,15 @@ exports.Verify = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _array = __webpack_require__(25);
+var _array = __webpack_require__(17);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(26);
+var _date = __webpack_require__(18);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
-var _string = __webpack_require__(27);
+var _string = __webpack_require__(19);
 
 var lib_proto_string = _interopRequireWildcard(_string);
 
@@ -12264,7 +12264,7 @@ function config (name) {
 // permission from the author, Mathias Buus (@mafintosh).
 
 
-var ERR_STREAM_PREMATURE_CLOSE = __webpack_require__(18).codes.ERR_STREAM_PREMATURE_CLOSE;
+var ERR_STREAM_PREMATURE_CLOSE = __webpack_require__(21).codes.ERR_STREAM_PREMATURE_CLOSE;
 
 function once(callback) {
   var called = false;
@@ -13605,7 +13605,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 // permission from the author, Mathias Buus (@mafintosh).
 
 
-var ERR_STREAM_PREMATURE_CLOSE = __webpack_require__(21).codes.ERR_STREAM_PREMATURE_CLOSE;
+var ERR_STREAM_PREMATURE_CLOSE = __webpack_require__(24).codes.ERR_STREAM_PREMATURE_CLOSE;
 
 function once(callback) {
   var called = false;
@@ -13711,7 +13711,7 @@ module.exports = eos;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var bn = __webpack_require__(180);
-var randomBytes = __webpack_require__(17);
+var randomBytes = __webpack_require__(20);
 module.exports = crt;
 function blind(priv) {
   var r = getr(priv);
@@ -17773,15 +17773,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Convert = undefined;
 
-var _array = __webpack_require__(25);
+var _array = __webpack_require__(17);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(26);
+var _date = __webpack_require__(18);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
-var _string = __webpack_require__(27);
+var _string = __webpack_require__(19);
 
 var lib_proto_string = _interopRequireWildcard(_string);
 
@@ -17981,9 +17981,9 @@ var Convert = exports.Convert = {
             return r;
         } else if (_verify.Verify.isError(obj)) {
             return JSON.stringify({
-                code: arg.code || null,
-                message: arg.message || null,
-                stack: arg.stack || null
+                code: obj.code || null,
+                message: obj.message || null,
+                stack: obj.stack || null
             });
         } else if (_verify.Verify.isArray(obj)) {
             var arr = new Array();
@@ -18191,7 +18191,7 @@ var destroyImpl = __webpack_require__(66);
 var _require = __webpack_require__(67),
     getHighWaterMark = _require.getHighWaterMark;
 
-var _require$codes = __webpack_require__(18).codes,
+var _require$codes = __webpack_require__(21).codes,
     ERR_INVALID_ARG_TYPE = _require$codes.ERR_INVALID_ARG_TYPE,
     ERR_STREAM_PUSH_AFTER_EOF = _require$codes.ERR_STREAM_PUSH_AFTER_EOF,
     ERR_METHOD_NOT_IMPLEMENTED = _require$codes.ERR_METHOD_NOT_IMPLEMENTED,
@@ -18219,7 +18219,7 @@ function prependListener(emitter, event, fn) {
 }
 
 function ReadableState(options, stream, isDuplex) {
-  Duplex = Duplex || __webpack_require__(19);
+  Duplex = Duplex || __webpack_require__(22);
   options = options || {}; // Duplex streams are both readable and writable, but share
   // the same options object.
   // However, some cases require setting options to different
@@ -18282,7 +18282,7 @@ function ReadableState(options, stream, isDuplex) {
 }
 
 function Readable(options) {
-  Duplex = Duplex || __webpack_require__(19);
+  Duplex = Duplex || __webpack_require__(22);
   if (!(this instanceof Readable)) return new Readable(options); // Checking for a Stream.Duplex instance is faster here instead of inside
   // the ReadableState constructor, at least with V8 6.5
 
@@ -19365,7 +19365,7 @@ module.exports = {
 "use strict";
 
 
-var ERR_INVALID_OPT_VALUE = __webpack_require__(18).codes.ERR_INVALID_OPT_VALUE;
+var ERR_INVALID_OPT_VALUE = __webpack_require__(21).codes.ERR_INVALID_OPT_VALUE;
 
 function highWaterMarkFrom(options, isDuplex, duplexKey) {
   return options.highWaterMark != null ? options.highWaterMark : isDuplex ? options[duplexKey] : null;
@@ -19482,7 +19482,7 @@ var destroyImpl = __webpack_require__(66);
 var _require = __webpack_require__(67),
     getHighWaterMark = _require.getHighWaterMark;
 
-var _require$codes = __webpack_require__(18).codes,
+var _require$codes = __webpack_require__(21).codes,
     ERR_INVALID_ARG_TYPE = _require$codes.ERR_INVALID_ARG_TYPE,
     ERR_METHOD_NOT_IMPLEMENTED = _require$codes.ERR_METHOD_NOT_IMPLEMENTED,
     ERR_MULTIPLE_CALLBACK = _require$codes.ERR_MULTIPLE_CALLBACK,
@@ -19499,7 +19499,7 @@ __webpack_require__(0)(Writable, Stream);
 function nop() {}
 
 function WritableState(options, stream, isDuplex) {
-  Duplex = Duplex || __webpack_require__(19);
+  Duplex = Duplex || __webpack_require__(22);
   options = options || {}; // Duplex streams are both readable and writable, but share
   // the same options object.
   // However, some cases require setting options to different
@@ -19625,7 +19625,7 @@ if (typeof Symbol === 'function' && Symbol.hasInstance && typeof Function.protot
 }
 
 function Writable(options) {
-  Duplex = Duplex || __webpack_require__(19); // Writable ctor is applied to Duplexes, too.
+  Duplex = Duplex || __webpack_require__(22); // Writable ctor is applied to Duplexes, too.
   // `realHasInstance` is necessary because using plain `instanceof`
   // would return false, as no `_writableState` property is attached.
   // Trying to use the custom `instanceof` for Writable here will also break the
@@ -20165,13 +20165,13 @@ Writable.prototype._destroy = function (err, cb) {
 
 module.exports = Transform;
 
-var _require$codes = __webpack_require__(18).codes,
+var _require$codes = __webpack_require__(21).codes,
     ERR_METHOD_NOT_IMPLEMENTED = _require$codes.ERR_METHOD_NOT_IMPLEMENTED,
     ERR_MULTIPLE_CALLBACK = _require$codes.ERR_MULTIPLE_CALLBACK,
     ERR_TRANSFORM_ALREADY_TRANSFORMING = _require$codes.ERR_TRANSFORM_ALREADY_TRANSFORMING,
     ERR_TRANSFORM_WITH_LENGTH_0 = _require$codes.ERR_TRANSFORM_WITH_LENGTH_0;
 
-var Duplex = __webpack_require__(19);
+var Duplex = __webpack_require__(22);
 
 __webpack_require__(0)(Transform, Duplex);
 
@@ -20315,7 +20315,7 @@ function done(stream, er, data) {
  */
 
 var inherits = __webpack_require__(0)
-var Hash = __webpack_require__(20)
+var Hash = __webpack_require__(23)
 var Buffer = __webpack_require__(1).Buffer
 
 var K = [
@@ -20448,7 +20448,7 @@ module.exports = Sha256
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(0)
-var Hash = __webpack_require__(20)
+var Hash = __webpack_require__(23)
 var Buffer = __webpack_require__(1).Buffer
 
 var K = [
@@ -22945,7 +22945,7 @@ module.exports = StreamCipher
 /* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var randomBytes = __webpack_require__(17);
+var randomBytes = __webpack_require__(20);
 module.exports = findPrime;
 findPrime.simpleSieve = simpleSieve;
 findPrime.fermatTest = fermatTest;
@@ -26696,7 +26696,7 @@ var destroyImpl = __webpack_require__(96);
 var _require = __webpack_require__(97),
     getHighWaterMark = _require.getHighWaterMark;
 
-var _require$codes = __webpack_require__(21).codes,
+var _require$codes = __webpack_require__(24).codes,
     ERR_INVALID_ARG_TYPE = _require$codes.ERR_INVALID_ARG_TYPE,
     ERR_STREAM_PUSH_AFTER_EOF = _require$codes.ERR_STREAM_PUSH_AFTER_EOF,
     ERR_METHOD_NOT_IMPLEMENTED = _require$codes.ERR_METHOD_NOT_IMPLEMENTED,
@@ -26724,7 +26724,7 @@ function prependListener(emitter, event, fn) {
 }
 
 function ReadableState(options, stream, isDuplex) {
-  Duplex = Duplex || __webpack_require__(22);
+  Duplex = Duplex || __webpack_require__(25);
   options = options || {}; // Duplex streams are both readable and writable, but share
   // the same options object.
   // However, some cases require setting options to different
@@ -26787,7 +26787,7 @@ function ReadableState(options, stream, isDuplex) {
 }
 
 function Readable(options) {
-  Duplex = Duplex || __webpack_require__(22);
+  Duplex = Duplex || __webpack_require__(25);
   if (!(this instanceof Readable)) return new Readable(options); // Checking for a Stream.Duplex instance is faster here instead of inside
   // the ReadableState constructor, at least with V8 6.5
 
@@ -27870,7 +27870,7 @@ module.exports = {
 "use strict";
 
 
-var ERR_INVALID_OPT_VALUE = __webpack_require__(21).codes.ERR_INVALID_OPT_VALUE;
+var ERR_INVALID_OPT_VALUE = __webpack_require__(24).codes.ERR_INVALID_OPT_VALUE;
 
 function highWaterMarkFrom(options, isDuplex, duplexKey) {
   return options.highWaterMark != null ? options.highWaterMark : isDuplex ? options[duplexKey] : null;
@@ -27987,7 +27987,7 @@ var destroyImpl = __webpack_require__(96);
 var _require = __webpack_require__(97),
     getHighWaterMark = _require.getHighWaterMark;
 
-var _require$codes = __webpack_require__(21).codes,
+var _require$codes = __webpack_require__(24).codes,
     ERR_INVALID_ARG_TYPE = _require$codes.ERR_INVALID_ARG_TYPE,
     ERR_METHOD_NOT_IMPLEMENTED = _require$codes.ERR_METHOD_NOT_IMPLEMENTED,
     ERR_MULTIPLE_CALLBACK = _require$codes.ERR_MULTIPLE_CALLBACK,
@@ -28004,7 +28004,7 @@ __webpack_require__(0)(Writable, Stream);
 function nop() {}
 
 function WritableState(options, stream, isDuplex) {
-  Duplex = Duplex || __webpack_require__(22);
+  Duplex = Duplex || __webpack_require__(25);
   options = options || {}; // Duplex streams are both readable and writable, but share
   // the same options object.
   // However, some cases require setting options to different
@@ -28130,7 +28130,7 @@ if (typeof Symbol === 'function' && Symbol.hasInstance && typeof Function.protot
 }
 
 function Writable(options) {
-  Duplex = Duplex || __webpack_require__(22); // Writable ctor is applied to Duplexes, too.
+  Duplex = Duplex || __webpack_require__(25); // Writable ctor is applied to Duplexes, too.
   // `realHasInstance` is necessary because using plain `instanceof`
   // would return false, as no `_writableState` property is attached.
   // Trying to use the custom `instanceof` for Writable here will also break the
@@ -28670,13 +28670,13 @@ Writable.prototype._destroy = function (err, cb) {
 
 module.exports = Transform;
 
-var _require$codes = __webpack_require__(21).codes,
+var _require$codes = __webpack_require__(24).codes,
     ERR_METHOD_NOT_IMPLEMENTED = _require$codes.ERR_METHOD_NOT_IMPLEMENTED,
     ERR_MULTIPLE_CALLBACK = _require$codes.ERR_MULTIPLE_CALLBACK,
     ERR_TRANSFORM_ALREADY_TRANSFORMING = _require$codes.ERR_TRANSFORM_ALREADY_TRANSFORMING,
     ERR_TRANSFORM_WITH_LENGTH_0 = _require$codes.ERR_TRANSFORM_WITH_LENGTH_0;
 
-var Duplex = __webpack_require__(22);
+var Duplex = __webpack_require__(25);
 
 __webpack_require__(0)(Transform, Duplex);
 
@@ -34323,15 +34323,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Comm = undefined;
 
-var _array = __webpack_require__(25);
+var _array = __webpack_require__(17);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(26);
+var _date = __webpack_require__(18);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
-var _string = __webpack_require__(27);
+var _string = __webpack_require__(19);
 
 var lib_proto_string = _interopRequireWildcard(_string);
 
@@ -34343,13 +34343,16 @@ var _random = __webpack_require__(249);
 
 var _url = __webpack_require__(250);
 
+var _process = __webpack_require__(251);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var _Comm = {
     Verify: _verify.Verify,
     Convert: _convert.Convert,
     Random: _random.Random,
-    Url: _url.Url
+    Url: _url.Url,
+    Process: _process.Process
 };
 try {
     window.Comm = _Comm;
@@ -34612,7 +34615,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(39), __webpack_require__(226), __webpack_require__(227), __webpack_require__(23), __webpack_require__(24), __webpack_require__(59), __webpack_require__(114), __webpack_require__(228), __webpack_require__(115), __webpack_require__(229), __webpack_require__(230), __webpack_require__(231), __webpack_require__(60), __webpack_require__(232), __webpack_require__(16), __webpack_require__(5), __webpack_require__(233), __webpack_require__(234), __webpack_require__(235), __webpack_require__(236), __webpack_require__(237), __webpack_require__(238), __webpack_require__(239), __webpack_require__(240), __webpack_require__(241), __webpack_require__(242), __webpack_require__(243), __webpack_require__(244), __webpack_require__(245), __webpack_require__(246), __webpack_require__(247), __webpack_require__(248));
+		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(39), __webpack_require__(226), __webpack_require__(227), __webpack_require__(26), __webpack_require__(27), __webpack_require__(59), __webpack_require__(114), __webpack_require__(228), __webpack_require__(115), __webpack_require__(229), __webpack_require__(230), __webpack_require__(231), __webpack_require__(60), __webpack_require__(232), __webpack_require__(16), __webpack_require__(5), __webpack_require__(233), __webpack_require__(234), __webpack_require__(235), __webpack_require__(236), __webpack_require__(237), __webpack_require__(238), __webpack_require__(239), __webpack_require__(240), __webpack_require__(241), __webpack_require__(242), __webpack_require__(243), __webpack_require__(244), __webpack_require__(245), __webpack_require__(246), __webpack_require__(247), __webpack_require__(248));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -34635,7 +34638,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 "use strict";
 
 
-exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = __webpack_require__(17)
+exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = __webpack_require__(20)
 exports.createHash = exports.Hash = __webpack_require__(28)
 exports.createHmac = exports.Hmac = __webpack_require__(76)
 
@@ -34811,7 +34814,7 @@ exports = module.exports = __webpack_require__(64);
 exports.Stream = exports;
 exports.Readable = exports;
 exports.Writable = __webpack_require__(68);
-exports.Duplex = __webpack_require__(19);
+exports.Duplex = __webpack_require__(22);
 exports.Transform = __webpack_require__(69);
 exports.PassThrough = __webpack_require__(128);
 exports.finished = __webpack_require__(43);
@@ -35334,7 +35337,7 @@ function once(callback) {
   };
 }
 
-var _require$codes = __webpack_require__(18).codes,
+var _require$codes = __webpack_require__(21).codes,
     ERR_MISSING_ARGS = _require$codes.ERR_MISSING_ARGS,
     ERR_STREAM_DESTROYED = _require$codes.ERR_STREAM_DESTROYED;
 
@@ -35430,7 +35433,7 @@ module.exports = pipeline;
  */
 
 var inherits = __webpack_require__(0)
-var Hash = __webpack_require__(20)
+var Hash = __webpack_require__(23)
 var Buffer = __webpack_require__(1).Buffer
 
 var K = [
@@ -35531,7 +35534,7 @@ module.exports = Sha
  */
 
 var inherits = __webpack_require__(0)
-var Hash = __webpack_require__(20)
+var Hash = __webpack_require__(23)
 var Buffer = __webpack_require__(1).Buffer
 
 var K = [
@@ -35636,7 +35639,7 @@ module.exports = Sha1
 
 var inherits = __webpack_require__(0)
 var Sha256 = __webpack_require__(70)
-var Hash = __webpack_require__(20)
+var Hash = __webpack_require__(23)
 var Buffer = __webpack_require__(1).Buffer
 
 var W = new Array(64)
@@ -35687,7 +35690,7 @@ module.exports = Sha224
 
 var inherits = __webpack_require__(0)
 var SHA512 = __webpack_require__(71)
-var Hash = __webpack_require__(20)
+var Hash = __webpack_require__(23)
 var Buffer = __webpack_require__(1).Buffer
 
 var W = new Array(160)
@@ -40841,7 +40844,7 @@ var TEN = new BN(10);
 var THREE = new BN(3);
 var SEVEN = new BN(7);
 var primes = __webpack_require__(91);
-var randomBytes = __webpack_require__(17);
+var randomBytes = __webpack_require__(20);
 module.exports = DH;
 
 function setPublicKey(pub, enc) {
@@ -41105,7 +41108,7 @@ exports = module.exports = __webpack_require__(94);
 exports.Stream = exports;
 exports.Readable = exports;
 exports.Writable = __webpack_require__(98);
-exports.Duplex = __webpack_require__(22);
+exports.Duplex = __webpack_require__(25);
 exports.Transform = __webpack_require__(99);
 exports.PassThrough = __webpack_require__(177);
 exports.finished = __webpack_require__(53);
@@ -41628,7 +41631,7 @@ function once(callback) {
   };
 }
 
-var _require$codes = __webpack_require__(21).codes,
+var _require$codes = __webpack_require__(24).codes,
     ERR_MISSING_ARGS = _require$codes.ERR_MISSING_ARGS,
     ERR_STREAM_DESTROYED = _require$codes.ERR_STREAM_DESTROYED;
 
@@ -57533,7 +57536,7 @@ exports.publicDecrypt = function publicDecrypt (key, buf) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var parseKeys = __webpack_require__(38)
-var randomBytes = __webpack_require__(17)
+var randomBytes = __webpack_require__(20)
 var createHash = __webpack_require__(28)
 var mgf = __webpack_require__(111)
 var xor = __webpack_require__(112)
@@ -57750,7 +57753,7 @@ function oldBrowser () {
   throw new Error('secure random number generation not supported by this browser\nuse chrome, FireFox or Internet Explorer 11')
 }
 var safeBuffer = __webpack_require__(1)
-var randombytes = __webpack_require__(17)
+var randombytes = __webpack_require__(20)
 var Buffer = safeBuffer.Buffer
 var kBufferMaxLength = safeBuffer.kMaxLength
 var crypto = global.crypto || global.msCrypto
@@ -59702,7 +59705,7 @@ function randomFillSync (buf, offset, size) {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(23), __webpack_require__(24), __webpack_require__(16), __webpack_require__(5));
+		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(26), __webpack_require__(27), __webpack_require__(16), __webpack_require__(5));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -59941,7 +59944,7 @@ function randomFillSync (buf, offset, size) {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(23), __webpack_require__(24), __webpack_require__(16), __webpack_require__(5));
+		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(26), __webpack_require__(27), __webpack_require__(16), __webpack_require__(5));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -60725,7 +60728,7 @@ function randomFillSync (buf, offset, size) {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(23), __webpack_require__(24), __webpack_require__(16), __webpack_require__(5));
+		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(26), __webpack_require__(27), __webpack_require__(16), __webpack_require__(5));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -60869,7 +60872,7 @@ function randomFillSync (buf, offset, size) {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(23), __webpack_require__(24), __webpack_require__(16), __webpack_require__(5));
+		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(26), __webpack_require__(27), __webpack_require__(16), __webpack_require__(5));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -61066,7 +61069,7 @@ function randomFillSync (buf, offset, size) {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(23), __webpack_require__(24), __webpack_require__(16), __webpack_require__(5));
+		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(26), __webpack_require__(27), __webpack_require__(16), __webpack_require__(5));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -61266,15 +61269,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Random = undefined;
 
-var _array = __webpack_require__(25);
+var _array = __webpack_require__(17);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(26);
+var _date = __webpack_require__(18);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
-var _string = __webpack_require__(27);
+var _string = __webpack_require__(19);
 
 var lib_proto_string = _interopRequireWildcard(_string);
 
@@ -61325,15 +61328,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Url = undefined;
 
-var _array = __webpack_require__(25);
+var _array = __webpack_require__(17);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(26);
+var _date = __webpack_require__(18);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
-var _string = __webpack_require__(27);
+var _string = __webpack_require__(19);
 
 var lib_proto_string = _interopRequireWildcard(_string);
 
@@ -61367,6 +61370,43 @@ var Url = exports.Url = {
         }
         return params;
     }
+};
+
+/***/ }),
+/* 251 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Process = undefined;
+
+var _array = __webpack_require__(17);
+
+var lib_proto_array = _interopRequireWildcard(_array);
+
+var _date = __webpack_require__(18);
+
+var lib_proto_date = _interopRequireWildcard(_date);
+
+var _string = __webpack_require__(19);
+
+var lib_proto_string = _interopRequireWildcard(_string);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var Process = exports.Process = {
+  /** 
+   * 休眠
+  */
+  sleep: function sleep(ms) {
+    return new Promise(function (resolve) {
+      return setTimeout(resolve, ms);
+    });
+  }
 };
 
 /***/ })
