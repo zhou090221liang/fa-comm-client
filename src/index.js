@@ -5,12 +5,14 @@ import { Verify } from './lib/verify';
 import { Convert } from './lib/convert';
 import { Random } from './lib/random';
 import { Url } from './lib/url';
+import { Process } from './lib/process';
 
 const _Comm = {
     Verify,
     Convert,
     Random,
-    Url
+    Url,
+    Process
 };
 try {
     window.Comm = _Comm;
