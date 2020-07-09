@@ -38,7 +38,7 @@ export const Verify = {
             }
             return true;
         } else {
-            if (obj.length) {
+            if (obj.length && typeof obj != "string") {
                 for (let i = 0; i < obj.length; i++) {
                     if (!this.isJson(obj[i]) && !this.isJsonArray(obj[i])) {
                         return false;

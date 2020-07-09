@@ -1,7 +1,7 @@
 <html>
 
 <body>
-    <script src="../../dist/index.js"></script>
+    <script src="../../dist/comm.js"></script>
     <script>
         window.onload = function () {
             /*********************Array 原型函数************************/
@@ -155,6 +155,8 @@
             console.log("扩展toString", str, Comm.Convert.toString(str));
             str = new Date();
             console.log("扩展toString", str, Comm.Convert.toString(str));
+            var byte = 1;
+            console.log(byte + "字节直接使用直观的表示方法:", Comm.Convert.sizeFormat(byte));
             /*********************Convert************************/
 
             /*********************Url************************/

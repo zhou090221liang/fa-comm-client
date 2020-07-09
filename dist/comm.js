@@ -11895,7 +11895,7 @@ var Verify = exports.Verify = {
 
             return true;
         } else {
-            if (obj.length) {
+            if (obj.length && typeof obj != "string") {
                 for (var i = 0; i < obj.length; i++) {
                     if (!this.isJson(obj[i]) && !this.isJsonArray(obj[i])) {
                         return false;
@@ -18006,11 +18006,41 @@ var Convert = exports.Convert = {
     /** 
      * 将字节大小转换成直观的单位显示
     */
-    sizeFormat: function sizeFormat(fileByte) {
-        var fileSizeByte = fileByte;
-        var fileSizeMsg = "";
-        if (fileSizeByte < 1048576) fileSizeMsg = (fileSizeByte / 1024).toFixed(2) + "KB";else if (fileSizeByte == 1048576) fileSizeMsg = "1MB";else if (fileSizeByte > 1048576 && fileSizeByte < 1073741824) fileSizeMsg = (fileSizeByte / (1024 * 1024)).toFixed(2) + "MB";else if (fileSizeByte > 1048576 && fileSizeByte == 1073741824) fileSizeMsg = "1GB";else if (fileSizeByte > 1073741824 && fileSizeByte < 1099511627776) fileSizeMsg = (fileSizeByte / (1024 * 1024 * 1024)).toFixed(2) + "GB";else fileSizeMsg = ">1TB";
-        return fileSizeMsg;
+    sizeFormat: function sizeFormat(bytes) {
+        var minKB = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+        if (isNaN(bytes)) {
+            return '';
+        }
+        var symbols = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+        var exp = Math.floor(Math.log(bytes) / Math.log(2));
+        if (exp < 1) {
+            exp = 0;
+        }
+        var i = Math.floor(exp / 10);
+        if (i < symbols.length) {
+            bytes = bytes / Math.pow(2, 10 * i);
+            if (bytes.toString().length > bytes.toFixed(2).toString().length) {
+                bytes = bytes.toFixed(2);
+            }
+            if (bytes >= 1000) {
+                bytes = parseFloat(bytes / 1024).toFixed(2);
+                i += 1;
+            }
+            if (i == 0 && minKB) {
+                i += 1;
+                bytes = parseFloat(bytes / 1024).toFixed(2);
+                bytes = bytes != '0.00' ? bytes : '0.01';
+            }
+            return bytes + symbols[i];
+        } else {
+            i = symbols.length - 1;
+            bytes = bytes / Math.pow(2, 10 * i);
+            if (bytes.toString().length > bytes.toFixed(2).toString().length) {
+                bytes = bytes.toFixed(2);
+            }
+            return bytes + symbols[i];
+        }
     }
 };
 

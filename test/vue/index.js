@@ -1,4 +1,4 @@
-import * as Comm from 'fa-comm-client';
+import { Comm } from 'fa-comm-client';
 
 var arr = [];
 arr.insert("a");
