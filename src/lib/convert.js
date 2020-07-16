@@ -151,11 +151,12 @@ export const Convert = {
             });
         }
         else if (Verify.isArray(obj)) {
-            let arr = new Array();
-            for (var i in obj) {
-                arr.push(toString(i));
-            }
-            return '[' + arr.join(',') + ']';
+            // let arr = new Array();
+            // for (var i in obj) {
+            //     arr.push(toString(i));
+            // }
+            // return '[' + arr.join(',') + ']';
+            return '[' + obj.join(',') + ']';
         }
         else if (Verify.isDate(obj))
             return obj.format('yyyy-MM-dd hh:mm:ss');
