@@ -15,3 +15,10 @@ console.log("格式化字符串", str, str.format("20150616001", "06月20日"));
 var json = '{"a":"a"}';
 json = Comm.Convert.toJson(json);
 console.log("转JSON对象", typeof json, json);
+
+var date = new Date('2020-04-23');
+var calendar = Comm.Calendar.solar2lunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
+console.log(date.format('yyyy-MM-dd那天：'), calendar);
+date = new Date('2020-05-23');
+calendar = Comm.Calendar.solar2lunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
+console.log(date.format('yyyy-MM-dd那天：'), calendar);

@@ -6,13 +6,15 @@ import { Convert } from './lib/convert';
 import { Random } from './lib/random';
 import { Url } from './lib/url';
 import { Process } from './lib/process';
+import { Calendar } from './lib/third/calendar';
 
 const _Comm = {
     Verify,
     Convert,
     Random,
     Url,
-    Process
+    Process,
+    Calendar
 };
 try {
     window.Comm = _Comm;

@@ -163,6 +163,15 @@
             console.log("当前地址参数:", Comm.Url.convert());
             console.log("当前地址参数:", Comm.Url.getParams("name"));
             /*********************Url************************/
+
+            /*********************日历************************/
+            var date = new Date('2020-04-23');
+            var calendar = Comm.Calendar.solar2lunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
+            console.log(date.format('yyyy-MM-dd那天：'), calendar);
+            date = new Date('2020-05-23');
+            calendar = Comm.Calendar.solar2lunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
+            console.log(date.format('yyyy-MM-dd那天：'), calendar);
+            /*********************日历************************/
         }
     </script>
 </body>
