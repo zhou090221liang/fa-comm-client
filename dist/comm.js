@@ -31362,7 +31362,6 @@ var DateComm = exports.DateComm = {
         date = date || new Date();
         return new Date(date.Format('yyyy/MM/01 00:00:00'));
     },
-
     /**
      * 获取指定日期的当月最后一天
      * @param {*} date 日期，默认当前时间
@@ -31375,7 +31374,6 @@ var DateComm = exports.DateComm = {
         date = date || new Date();
         return new Date(date.getFullYear(), date.getMonth() + 1, 0);
     },
-
     /**
      * 获取指定日期的当月最后一天
      * @param {*} date 日期，默认当前时间
@@ -31388,7 +31386,6 @@ var DateComm = exports.DateComm = {
         date = date || new Date();
         return new Date(date.format('yyyy/12/31'));
     },
-
     /**
      * 获取指定日期的当年第一天
      * @param {*} date 日期，默认当前时间
@@ -31401,7 +31398,6 @@ var DateComm = exports.DateComm = {
         date = date || new Date();
         return new Date(date.Format('yyyy/01/01 00:00:00'));
     },
-
     /**
      * 获得当前时间
      * @returns
@@ -31409,7 +31405,6 @@ var DateComm = exports.DateComm = {
     getCurrentDate: function getCurrentDate() {
         return new Date();
     },
-
     /**
      * 获得指定日期的所在周的周起止时间
      * @param {*} date 日期，默认当前时间
@@ -31442,7 +31437,6 @@ var DateComm = exports.DateComm = {
         //返回  
         return startStop;
     },
-
     /**
      * 获得指定日期所在月份的月的起止时间
      * @param {*} date 日期，默认当前时间
@@ -31482,7 +31476,6 @@ var DateComm = exports.DateComm = {
         //返回  
         return startStop;
     },
-
     /**
      * 获取指定日期所在的季度的开始的月份
      * @param {*} date 日期，默认当前时间
@@ -31510,7 +31503,6 @@ var DateComm = exports.DateComm = {
         }
         return winter;
     },
-
     /**
      * 获取指定日期所在的季度的时间范围
      * @param {*} date 日期，默认当前时间
@@ -31537,7 +31529,6 @@ var DateComm = exports.DateComm = {
         }
         return [new Date(date.format('yyyy-10-01 00:00:00')), new Date(date.format('yyyy-12-31 00:00:00'))];
     },
-
     /**
      * 获取指定日期对应年月的月天数
      * @param {*} date 日期，默认当前时间
@@ -31570,7 +31561,6 @@ var DateComm = exports.DateComm = {
         //返回得到上月的最后一天,也就是本月总天数  
         return new Date(nextMonthDayOne.getTime() - millisecond).getDate();
     },
-
     /**
      * 返回指定日期上一个月的第一天
      * @param {*} date 日期，默认当前时间
@@ -31593,7 +31583,25 @@ var DateComm = exports.DateComm = {
         month--;
         return new Date(year, month, 1);;
     },
-
+    /**
+     * 返回指定日期下一个月的第一天
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getNextMonthFirstDay: function getNextMonthFirstDay(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        var month = date.getMonth();
+        var year = date.getFullYear();
+        month++;
+        if (month == 12) {
+            year++;
+            month = 0;
+        }
+        return new Date(year, month, 1);;
+    },
     /**
      * 获得指定日期的上一月的起止日期
      * @param {*} date 日期，默认当前时间
@@ -31620,7 +31628,29 @@ var DateComm = exports.DateComm = {
         //返回  
         return startStop;
     },
-
+    /**
+     * 获得指定日期的下一月的起止日期
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getNextMonth: function getNextMonth(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        //起止日期数组  
+        var startStop = new Array();
+        //获得下一个月的第一天  
+        var priorMonthFirstDay = getNextMonthFirstDay(date);
+        //获得上一月的最后一天  
+        // var priorMonthLastDay = new Date(priorMonthFirstDay.getFullYear(), priorMonthFirstDay.getMonth(), getMonthDays(priorMonthFirstDay));
+        var priorMonthLastDay = new Date(priorMonthFirstDay.format('yyyy-MM-' + getMonthDays(priorMonthFirstDay) + ' 00:00:00'));
+        //添加至数组  
+        startStop.push(priorMonthFirstDay);
+        startStop.push(priorMonthLastDay);
+        //返回  
+        return startStop;
+    },
     /**
      * 获得指定日期上一周的起止日期
      * @param {*} date 日期，默认当前时间
@@ -31652,7 +31682,23 @@ var DateComm = exports.DateComm = {
         startStop.push(priorWeekLastDay);
         return startStop;
     },
-
+    /**
+     * 获得指定日期下一周的起止日期
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getNextWeek: function getNextWeek(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        //获取本周最后一天
+        date = getCurrentWeek(date)[1];
+        //获取下周第一天
+        date = dateAddDays(1, date);
+        //获取本周范围
+        return getCurrentWeek(date);
+    },
     /**
      * 得到指定日期上一年的起止日期
      * @param {*} date 日期，默认当前时间
@@ -31674,6 +31720,114 @@ var DateComm = exports.DateComm = {
         startStop.push(priorYearFirstDay);
         startStop.push(priorYearLastDay);
         return startStop;
+    },
+    /**
+     * 得到指定日期下一年的起止日期
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getNextYear: function getNextYear(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        return [new Date(date.Format(date.getFullYear() + 1 + '/01/01 00:00:00')), new Date(date.Format(date.getFullYear() + 1 + '/12/31 00:00:00'))];
+    },
+    /**
+     * 增加或减少指定的毫秒数
+     * @param {Number} number 需要增加或减少的具体数值，负数减少，正数增加，0不变
+     * @param {*} date 日期，默认当前时间
+     */
+    dateAddMilliseconds: function dateAddMilliseconds(number, date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        return new Date(date.setMilliseconds(date.getMilliseconds() + number));
+    },
+    /**
+     * 增加或减少指定的秒数
+     * @param {Number} number 需要增加或减少的具体数值，负数减少，正数增加，0不变
+     * @param {*} date 日期，默认当前时间
+     */
+    dateAddSeconds: function dateAddSeconds(number, date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        return new Date(date.setSeconds(date.getSeconds() + number));
+    },
+    /**
+     * 增加或减少指定的分钟数
+     * @param {Number} number 需要增加或减少的具体数值，负数减少，正数增加，0不变
+     * @param {*} date 日期，默认当前时间
+     */
+    dateAddMinutes: function dateAddMinutes(number, date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        return new Date(date.setMinutes(date.getMinutes() + number));
+    },
+    /**
+     * 增加或减少指定的小时数
+     * @param {Number} number 需要增加或减少的具体数值，负数减少，正数增加，0不变
+     * @param {*} date 日期，默认当前时间
+     */
+    dateAddHours: function dateAddHours(number, date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        return new Date(date.setHours(date.getHours() + number));
+    },
+    /**
+     * 增加或减少指定的天数
+     * @param {Number} number 需要增加或减少的具体数值，负数减少，正数增加，0不变
+     * @param {*} date 日期，默认当前时间
+     */
+    dateAddDays: function dateAddDays(number, date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        return new Date(date.setDate(date.getDate() + number));
+    },
+    /**
+     * 增加或减少指定的周数
+     * @param {Number} number 需要增加或减少的具体数值，负数减少，正数增加，0不变
+     * @param {*} date 日期，默认当前时间
+     */
+    dateAddWeeks: function dateAddWeeks(number, date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        return new Date(date.setDate(date.getDate() + number * 7));
+    },
+    /**
+     * 增加或减少指定的月数
+     * @param {Number} number 需要增加或减少的具体数值，负数减少，正数增加，0不变
+     * @param {*} date 日期，默认当前时间
+     */
+    dateAddMonths: function dateAddMonths(number, date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        return new Date(date.setMonth(date.getMonth() + number));
+    },
+    /**
+     * 增加或减少指定的年数
+     * @param {Number} number 需要增加或减少的具体数值，负数减少，正数增加，0不变
+     * @param {*} date 日期，默认当前时间
+     */
+    dateAddYears: function dateAddYears(number, date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        return new Date(date.setFullYear(date.getFullYear() + number));
     }
 };
 
