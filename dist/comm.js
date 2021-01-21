@@ -6207,7 +6207,7 @@ function isnan (val) {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(13));
+		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(14));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -7850,6 +7850,39 @@ module.exports = CipherBase
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+/**
+ * 对Date的扩展，将 Date 转化为指定格式的String
+ * 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+ * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+ * @param {String} fmt 格式字符串
+ * @returns
+ */
+Date.prototype.format = Date.prototype.Format = function (fmt) {
+    if (!fmt) {
+        fmt = "yyyy-MM-dd hh:mm:ss";
+    }
+    var o = {
+        "M+": this.getMonth() + 1, //月份 
+        "d+": this.getDate(), //日 
+        "h+": this.getHours(), //小时 
+        "m+": this.getMinutes(), //分 
+        "s+": this.getSeconds(), //秒 
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o) {
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+    }return fmt;
+};
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -7983,7 +8016,7 @@ Duplex.prototype._destroy = function (err, cb) {
 };
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 ;(function (root, factory, undef) {
@@ -8122,7 +8155,7 @@ Duplex.prototype._destroy = function (err, cb) {
 }));
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8161,39 +8194,6 @@ Array.prototype.removeFirst = function () {
 Array.prototype.removeLast = function () {
   var index = this.length - 1;
   this.splice(index > -1 ? index : 0, 1);
-};
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * 对Date的扩展，将 Date 转化为指定格式的String
- * 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
- * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
- * @param {String} fmt 格式字符串
- * @returns
- */
-Date.prototype.format = Date.prototype.Format = function (fmt) {
-    if (!fmt) {
-        fmt = "yyyy-MM-dd hh:mm:ss";
-    }
-    var o = {
-        "M+": this.getMonth() + 1, //月份 
-        "d+": this.getDate(), //日 
-        "h+": this.getHours(), //小时 
-        "m+": this.getMinutes(), //分 
-        "s+": this.getSeconds(), //秒 
-        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
-        "S": this.getMilliseconds() //毫秒 
-    };
-    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (var k in o) {
-        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
-    }return fmt;
 };
 
 /***/ }),
@@ -10476,11 +10476,11 @@ exports.Verify = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _array = __webpack_require__(14);
+var _array = __webpack_require__(15);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(15);
+var _date = __webpack_require__(12);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
@@ -11436,7 +11436,7 @@ exports = module.exports = __webpack_require__(56);
 exports.Stream = exports;
 exports.Readable = exports;
 exports.Writable = __webpack_require__(39);
-exports.Duplex = __webpack_require__(12);
+exports.Duplex = __webpack_require__(13);
 exports.Transform = __webpack_require__(59);
 exports.PassThrough = __webpack_require__(104);
 
@@ -11614,7 +11614,7 @@ util.inherits(Writable, Stream);
 function nop() {}
 
 function WritableState(options, stream) {
-  Duplex = Duplex || __webpack_require__(12);
+  Duplex = Duplex || __webpack_require__(13);
 
   options = options || {};
 
@@ -11764,7 +11764,7 @@ if (typeof Symbol === 'function' && Symbol.hasInstance && typeof Function.protot
 }
 
 function Writable(options) {
-  Duplex = Duplex || __webpack_require__(12);
+  Duplex = Duplex || __webpack_require__(13);
 
   // Writable ctor is applied to Duplexes, too.
   // `realHasInstance` is necessary because using plain `instanceof`
@@ -13585,11 +13585,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Convert = undefined;
 
-var _array = __webpack_require__(14);
+var _array = __webpack_require__(15);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(15);
+var _date = __webpack_require__(12);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
@@ -14047,7 +14047,7 @@ function prependListener(emitter, event, fn) {
 }
 
 function ReadableState(options, stream) {
-  Duplex = Duplex || __webpack_require__(12);
+  Duplex = Duplex || __webpack_require__(13);
 
   options = options || {};
 
@@ -14124,7 +14124,7 @@ function ReadableState(options, stream) {
 }
 
 function Readable(options) {
-  Duplex = Duplex || __webpack_require__(12);
+  Duplex = Duplex || __webpack_require__(13);
 
   if (!(this instanceof Readable)) return new Readable(options);
 
@@ -15126,7 +15126,7 @@ module.exports = {
 
 module.exports = Transform;
 
-var Duplex = __webpack_require__(12);
+var Duplex = __webpack_require__(13);
 
 /*<replacement>*/
 var util = Object.create(__webpack_require__(22));
@@ -18773,11 +18773,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Comm = undefined;
 
-var _array = __webpack_require__(14);
+var _array = __webpack_require__(15);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(15);
+var _date = __webpack_require__(12);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
@@ -18797,6 +18797,8 @@ var _process = __webpack_require__(201);
 
 var _calendar = __webpack_require__(202);
 
+var _date2 = __webpack_require__(203);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var _Comm = {
@@ -18805,7 +18807,8 @@ var _Comm = {
     Random: _random.Random,
     Url: _url.Url,
     Process: _process.Process,
-    Calendar: _calendar.Calendar
+    Calendar: _calendar.Calendar,
+    Date: _date2.DateComm
 };
 try {
     window.Comm = _Comm;
@@ -19068,7 +19071,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(32), __webpack_require__(176), __webpack_require__(177), __webpack_require__(19), __webpack_require__(20), __webpack_require__(51), __webpack_require__(91), __webpack_require__(178), __webpack_require__(92), __webpack_require__(179), __webpack_require__(180), __webpack_require__(181), __webpack_require__(52), __webpack_require__(182), __webpack_require__(13), __webpack_require__(5), __webpack_require__(183), __webpack_require__(184), __webpack_require__(185), __webpack_require__(186), __webpack_require__(187), __webpack_require__(188), __webpack_require__(189), __webpack_require__(190), __webpack_require__(191), __webpack_require__(192), __webpack_require__(193), __webpack_require__(194), __webpack_require__(195), __webpack_require__(196), __webpack_require__(197), __webpack_require__(198));
+		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(32), __webpack_require__(176), __webpack_require__(177), __webpack_require__(19), __webpack_require__(20), __webpack_require__(51), __webpack_require__(91), __webpack_require__(178), __webpack_require__(92), __webpack_require__(179), __webpack_require__(180), __webpack_require__(181), __webpack_require__(52), __webpack_require__(182), __webpack_require__(14), __webpack_require__(5), __webpack_require__(183), __webpack_require__(184), __webpack_require__(185), __webpack_require__(186), __webpack_require__(187), __webpack_require__(188), __webpack_require__(189), __webpack_require__(190), __webpack_require__(191), __webpack_require__(192), __webpack_require__(193), __webpack_require__(194), __webpack_require__(195), __webpack_require__(196), __webpack_require__(197), __webpack_require__(198));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -19686,7 +19689,7 @@ module.exports = __webpack_require__(39);
 /* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(12);
+module.exports = __webpack_require__(13);
 
 
 /***/ }),
@@ -29027,7 +29030,7 @@ function randomFillSync (buf, offset, size) {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(19), __webpack_require__(20), __webpack_require__(13), __webpack_require__(5));
+		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(19), __webpack_require__(20), __webpack_require__(14), __webpack_require__(5));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -29266,7 +29269,7 @@ function randomFillSync (buf, offset, size) {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(19), __webpack_require__(20), __webpack_require__(13), __webpack_require__(5));
+		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(19), __webpack_require__(20), __webpack_require__(14), __webpack_require__(5));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -30050,7 +30053,7 @@ function randomFillSync (buf, offset, size) {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(19), __webpack_require__(20), __webpack_require__(13), __webpack_require__(5));
+		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(19), __webpack_require__(20), __webpack_require__(14), __webpack_require__(5));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -30194,7 +30197,7 @@ function randomFillSync (buf, offset, size) {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(19), __webpack_require__(20), __webpack_require__(13), __webpack_require__(5));
+		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(19), __webpack_require__(20), __webpack_require__(14), __webpack_require__(5));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -30391,7 +30394,7 @@ function randomFillSync (buf, offset, size) {
 ;(function (root, factory, undef) {
 	if (true) {
 		// CommonJS
-		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(19), __webpack_require__(20), __webpack_require__(13), __webpack_require__(5));
+		module.exports = exports = factory(__webpack_require__(2), __webpack_require__(19), __webpack_require__(20), __webpack_require__(14), __webpack_require__(5));
 	}
 	else if (typeof define === "function" && define.amd) {
 		// AMD
@@ -30591,11 +30594,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Random = undefined;
 
-var _array = __webpack_require__(14);
+var _array = __webpack_require__(15);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(15);
+var _date = __webpack_require__(12);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
@@ -30650,11 +30653,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Url = undefined;
 
-var _array = __webpack_require__(14);
+var _array = __webpack_require__(15);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(15);
+var _date = __webpack_require__(12);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
@@ -30706,11 +30709,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Process = undefined;
 
-var _array = __webpack_require__(14);
+var _array = __webpack_require__(15);
 
 var lib_proto_array = _interopRequireWildcard(_array);
 
-var _date = __webpack_require__(15);
+var _date = __webpack_require__(12);
 
 var lib_proto_date = _interopRequireWildcard(_date);
 
@@ -31325,6 +31328,352 @@ var Calendar = exports.Calendar = {
         var cD = calObj.getUTCDate();
 
         return this.solar2lunar(cY, cM, cD);
+    }
+};
+
+/***/ }),
+/* 203 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.DateComm = undefined;
+
+var _date = __webpack_require__(12);
+
+var lib_proto_date = _interopRequireWildcard(_date);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var DateComm = exports.DateComm = {
+    /**
+     * 获取指定日期的当月第一天
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getFirstDateOfMonth: function getFirstDateOfMonth(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        return new Date(date.Format('yyyy/MM/01 00:00:00'));
+    },
+
+    /**
+     * 获取指定日期的当月最后一天
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getLastDateOfMonth: function getLastDateOfMonth(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    },
+
+    /**
+     * 获取指定日期的当月最后一天
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getLastDateOfYear: function getLastDateOfYear(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        return new Date(date.format('yyyy/12/31'));
+    },
+
+    /**
+     * 获取指定日期的当年第一天
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getFirstDateOfYear: function getFirstDateOfYear(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        return new Date(date.Format('yyyy/01/01 00:00:00'));
+    },
+
+    /**
+     * 获得当前时间
+     * @returns
+     */
+    getCurrentDate: function getCurrentDate() {
+        return new Date();
+    },
+
+    /**
+     * 获得指定日期的所在周的周起止时间
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getCurrentWeek: function getCurrentWeek(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        //起止日期数组  
+        var startStop = new Array();
+        //返回date是一周中的某一天  
+        var week = date.getDay();
+        //返回date是一个月中的某一天  
+        var month = date.getDate();
+        //一天的毫秒数  
+        var millisecond = 1000 * 60 * 60 * 24;
+        //减去的天数  
+        var minusDay = week != 0 ? week - 1 : 6;
+        //alert(minusDay);  
+        //本周 周一  
+        var monday = new Date(date.getTime() - minusDay * millisecond);
+        //本周 周日  
+        var sunday = new Date(monday.getTime() + 6 * millisecond);
+        //添加本周时间  
+        startStop.push(new Date(monday.format('yyyy/MM/dd 00:00:00'))); //本周起始时间  
+        //添加本周最后一天时间  
+        startStop.push(new Date(sunday.format('yyyy/MM/dd 00:00:00'))); //本周终止时间  
+        //返回  
+        return startStop;
+    },
+
+    /**
+     * 获得指定日期所在月份的月的起止时间
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getCurrentMonth: function getCurrentMonth(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        //起止日期数组  
+        var startStop = new Array();
+        //获得当前月份0-11  
+        var currentMonth = date.getMonth();
+        //获得当前年份4位年  
+        var currentYear = date.getFullYear();
+        //求出本月第一天  
+        var firstDay = new Date(currentYear, currentMonth, 1);
+        //当为12月的时候年份需要加1  
+        //月份需要更新为0 也就是下一年的第一个月  
+        if (currentMonth == 11) {
+            currentYear++;
+            currentMonth = 0; //就为  
+        } else {
+            //否则只是月份增加,以便求的下一月的第一天  
+            currentMonth++;
+        }
+        //一天的毫秒数  
+        var millisecond = 1000 * 60 * 60 * 24;
+        //下月的第一天  
+        var nextMonthDayOne = new Date(currentYear, currentMonth, 1);
+        //求出上月的最后一天  
+        var lastDay = new Date(nextMonthDayOne.getTime() - millisecond);
+        //添加至数组中返回  
+        startStop.push(new Date(firstDay.format('yyyy/MM/dd 00:00:00')));
+        startStop.push(new Date(lastDay.format('yyyy/MM/dd 00:00:00')));
+        //返回  
+        return startStop;
+    },
+
+    /**
+     * 获取指定日期所在的季度的开始的月份
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getQuarterSeasonStartMonth: function getQuarterSeasonStartMonth(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        var spring = new Date(date.format('yyyy/01/01 00:00:00')); //春  
+        var summer = new Date(date.format('yyyy/04/01 00:00:00')); //夏  
+        var fall = new Date(date.format('yyyy/07/01 00:00:00')); //秋  
+        var winter = new Date(date.format('yyyy/10/01 00:00:00')); //冬  
+        var month = date.getMonth();
+        //月份从0-11  
+        if (month < 3) {
+            return spring;
+        }
+        if (month < 6) {
+            return summer;
+        }
+        if (month < 9) {
+            return fall;
+        }
+        return winter;
+    },
+
+    /**
+     * 获取指定日期所在的季度的时间范围
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getQuarterSeason: function getQuarterSeason(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        var month = date.getMonth();
+        //月份从0-11  
+        if (month < 3) {
+            //春
+            return [new Date(date.format('yyyy-01-01 00:00:00')), new Date(date.format('yyyy-03-31 00:00:00'))];
+        }
+        if (month < 6) {
+            //夏  
+            return [new Date(date.format('yyyy-04-01 00:00:00')), new Date(date.format('yyyy-06-30 00:00:00'))];
+        }
+        if (month < 9) {
+            //秋
+            return [new Date(date.format('yyyy-07-01 00:00:00')), new Date(date.format('yyyy-09-30 00:00:00'))];
+        }
+        return [new Date(date.format('yyyy-10-01 00:00:00')), new Date(date.format('yyyy-12-31 00:00:00'))];
+    },
+
+    /**
+     * 获取指定日期对应年月的月天数
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getMonthDays: function getMonthDays(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        //本月第一天 1-31  
+        var relativeDate = new Date(date.format('yyyy-MM-01 00:00:00'));
+        //获得当前月份0-11  
+        var relativeMonth = relativeDate.getMonth();
+        //获得当前年份4位年  
+        var relativeYear = relativeDate.getFullYear();
+        //当为12月的时候年份需要加1  
+        //月份需要更新为0 也就是下一年的第一个月  
+        if (relativeMonth == 11) {
+            relativeYear++;
+            relativeMonth = 0;
+        } else {
+            //否则只是月份增加,以便求的下一月的第一天  
+            relativeMonth++;
+        }
+        //一天的毫秒数  
+        var millisecond = 1000 * 60 * 60 * 24;
+        //下月的第一天  
+        var nextMonthDayOne = new Date(relativeYear, relativeMonth, 1);
+        //返回得到上月的最后一天,也就是本月总天数  
+        return new Date(nextMonthDayOne.getTime() - millisecond).getDate();
+    },
+
+    /**
+     * 返回指定日期上一个月的第一天
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getPriorMonthFirstDay: function getPriorMonthFirstDay(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        var month = date.getMonth();
+        var year = date.getFullYear();
+        //年份为0代表,是本年的第一月,所以不能减  
+        if (month == 0) {
+            month = 11; //月份为上年的最后月份  
+            year--; //年份减1  
+            return new Date(year, month, 1);
+        }
+        //否则,只减去月份  
+        month--;
+        return new Date(year, month, 1);;
+    },
+
+    /**
+     * 获得指定日期的上一月的起止日期
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getPreviousMonth: function getPreviousMonth(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        //起止日期数组  
+        var startStop = new Array();
+        //获得当前月份0-11  
+        var currentMonth = date.getMonth();
+        //获得当前年份4位年  
+        var currentYear = date.getFullYear();
+        //获得上一个月的第一天  
+        var priorMonthFirstDay = getPriorMonthFirstDay(date);
+        //获得上一月的最后一天  
+        var priorMonthLastDay = new Date(priorMonthFirstDay.getFullYear(), priorMonthFirstDay.getMonth(), getMonthDays(priorMonthFirstDay));
+        //添加至数组  
+        startStop.push(priorMonthFirstDay);
+        startStop.push(priorMonthLastDay);
+        //返回  
+        return startStop;
+    },
+
+    /**
+     * 获得指定日期上一周的起止日期
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getPreviousWeek: function getPreviousWeek(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        //起止日期数组  
+        var startStop = new Array();
+        //返回date是一周中的某一天  
+        var week = date.getDay();
+        //返回date是一个月中的某一天  
+        var month = date.getDate();
+        //一天的毫秒数  
+        var millisecond = 1000 * 60 * 60 * 24;
+        //减去的天数  
+        var minusDay = week != 0 ? week - 1 : 6;
+        //获得当前周的第一天  
+        var currentWeekDayOne = new Date(date.getTime() - millisecond * minusDay);
+        //上周最后一天即本周开始的前一天  
+        var priorWeekLastDay = new Date(currentWeekDayOne.getTime() - millisecond);
+        //上周的第一天  
+        var priorWeekFirstDay = new Date(priorWeekLastDay.getTime() - millisecond * 6);
+        //添加至数组  
+        startStop.push(priorWeekFirstDay);
+        startStop.push(priorWeekLastDay);
+        return startStop;
+    },
+
+    /**
+     * 得到指定日期上一年的起止日期
+     * @param {*} date 日期，默认当前时间
+     * @returns
+     */
+    getPreviousYear: function getPreviousYear(date) {
+        if (date && typeof date == 'string') {
+            date = new Date(date);
+        }
+        date = date || new Date();
+        //起止日期数组  
+        var startStop = new Array();
+        //获得当前年份4位年  
+        var currentYear = date.getFullYear();
+        currentYear--;
+        var priorYearFirstDay = new Date(currentYear, 0, 1);
+        var priorYearLastDay = new Date(currentYear, 11, 31);
+        //添加至数组  
+        startStop.push(priorYearFirstDay);
+        startStop.push(priorYearLastDay);
+        return startStop;
     }
 };
 

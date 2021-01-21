@@ -22,3 +22,5 @@ console.log(date.format('yyyy-MM-dd那天：'), calendar);
 date = new Date('2020-05-23');
 calendar = Comm.Calendar.solar2lunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
 console.log(date.format('yyyy-MM-dd那天：'), calendar);
+
+console.log('本月最后一天：', Comm.Date.getLastDateOfMonth().format('yyyy-MM-dd hh:mm:ss'));

@@ -7,6 +7,7 @@ import { Random } from './lib/random';
 import { Url } from './lib/url';
 import { Process } from './lib/process';
 import { Calendar } from './lib/third/calendar';
+import { DateComm } from './lib/date';
 
 const _Comm = {
     Verify,
@@ -14,7 +15,8 @@ const _Comm = {
     Random,
     Url,
     Process,
-    Calendar
+    Calendar,
+    Date: DateComm
 };
 try {
     window.Comm = _Comm;

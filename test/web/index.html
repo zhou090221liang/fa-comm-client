@@ -10,117 +10,158 @@
             arr.insert("a");
             arr.insert("b");
             arr.insert("c", 1);
-            console.log("在数组的指定位置插入元素", arr);
+            document.write("在数组的指定位置插入元素", arr);
+            document.write('<br>');
             // 移除数组的某个元素
             arr.remove(1);
-            console.log("移除数组的某个元素", arr);
+            document.write("移除数组的某个元素", arr);
+            document.write('<br>');
             //移除数组的第一个元素
             arr.removeFirst();
-            console.log("移除数组的第一个元素", arr);
+            document.write("移除数组的第一个元素", arr);
+            document.write('<br>');
             //移除数组的最后一个元素
             arr = ["a", "b", "c"];
             arr.removeLast();
-            console.log("移除数组的最后一个元素", arr);
+            document.write("移除数组的最后一个元素", arr);
+            document.write('<br>');
             /*********************Array 原型函数************************/
 
             /*********************Date 原型函数************************/
             var current = new Date();
-            console.log("yyyy-MM-dd hh:mm:ss", current.format());
-            console.log("yyyy-MM-dd hh:mm:ss.S", current.format('yyyy-MM-dd hh:mm:ss.S'));
-            console.log("yyyy-MM-dd hh:mm:ss.S,q", current.format('yyyy-MM-dd hh:mm:ss.S,q'));
-            console.log("yyyy-MM-dd", current.format('yyyy-MM-dd'));
-            console.log("hh:mm:ss", current.format('yyyy-MM-dd hh:mm:ss'));
+            document.write("yyyy-MM-dd hh:mm:ss", current.format());
+            document.write('<br>');
+            document.write("yyyy-MM-dd hh:mm:ss.S", current.format('yyyy-MM-dd hh:mm:ss.S'));
+            document.write('<br>');
+            document.write("yyyy-MM-dd hh:mm:ss.S,q", current.format('yyyy-MM-dd hh:mm:ss.S,q'));
+            document.write('<br>');
+            document.write("yyyy-MM-dd", current.format('yyyy-MM-dd'));
+            document.write('<br>');
+            document.write("hh:mm:ss", current.format('yyyy-MM-dd hh:mm:ss'));
+            document.write('<br>');
             /*********************Date 原型函数************************/
 
             /*********************String 原型函数************************/
             //格式化字符串
             var str = "您的订单{0}已经提交成功，预计{1}送达";
-            console.log("格式化字符串", str, str.format("20150616001", "06月20日"));
+            document.write("格式化字符串", str, str.format("20150616001", "06月20日"));
+            document.write('<br>');
             //获取字符串字节长度
-            console.log("获取字符串字节长度", str, str.getByteLength());
-            console.log("获取字符串字节长度", str, str.getByteLength(2));
+            document.write("获取字符串字节长度", str, str.getByteLength());
+            document.write('<br>');
+            document.write("获取字符串字节长度", str, str.getByteLength(2));
+            document.write('<br>');
             //去除前后空格
             str = " A ";
-            console.log("去除前后空格", str, str.trim());
+            document.write("去除前后空格", str, str.trim());
+            document.write('<br>');
             //去除前空格
             str = " A ";
-            console.log("去除前空格", str, str.ltrim());
+            document.write("去除前空格", str, str.ltrim());
+            document.write('<br>');
             //去除后空格
             str = " A ";
-            console.log("去除后空格", str, str.rtrim());
+            document.write("去除后空格", str, str.rtrim());
+            document.write('<br>');
             //字符串结尾是否包含指定字符串
             str = "ABCDEFG"
-            console.log("字符串结尾是否包含指定字符串", str, str.endWith('EFG'), str.endWith('ABC'));
+            document.write("字符串结尾是否包含指定字符串", str, str.endWith('EFG'), str.endWith('ABC'));
+            document.write('<br>');
             //字符串开头是否包含指定字符串
             str = "ABCDEFG"
-            console.log("字符串开头是否包含指定字符串", str, str.startWith('EFG'), str.startWith('ABC'));
+            document.write("字符串开头是否包含指定字符串", str, str.startWith('EFG'), str.startWith('ABC'));
+            document.write('<br>');
             //是否中国手机号码
             str = "13800138000";
-            console.log("是否中国手机号码", str, str.isChineseCellphone());
+            document.write("是否中国手机号码", str, str.isChineseCellphone());
+            document.write('<br>');
             //是否邮箱地址
             str = "zxy@zhouxiaoyue.cn";
-            console.log("是否邮箱地址", str, str.isEmailAddress());
+            document.write("是否邮箱地址", str, str.isEmailAddress());
+            document.write('<br>');
             //是否QQ号码
             str = "236723201";
-            console.log("是否QQ号码", str, str.isQqNumber());
+            document.write("是否QQ号码", str, str.isQqNumber());
+            document.write('<br>');
             //是否MD5
             str = "ahhhsw6726221gshcccaaawqssaaaaaa";
-            console.log("是否MD5", str, str.isMd5());
+            document.write("是否MD5", str, str.isMd5());
+            document.write('<br>');
             str = "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4";
-            console.log("是否MD5", str, str.isMd5());
+            document.write("是否MD5", str, str.isMd5());
+            document.write('<br>');
             //是否URL
             str = "http://www.baidu.com";
-            console.log("是否URL", str, str.isUrl());
+            document.write("是否URL", str, str.isUrl());
+            document.write('<br>');
             //是否Guid
             str = "00000000-0000-0000-0000-000000000000";
-            console.log("是否Guid", str, str.isGuid());
+            document.write("是否Guid", str, str.isGuid());
+            document.write('<br>');
             //是否中国居民身份证号
             str = "320501198801011111";
-            console.log("是否中国居民身份证号", str, str.isChineseCitizenIdCardNumber());
-            console.log("是否中国居民身份证号", str, str.isChineseCitizenIdCardNumber(2));
+            document.write("是否中国居民身份证号", str, str.isChineseCitizenIdCardNumber());
+            document.write('<br>');
+            document.write("是否中国居民身份证号", str, JSON.stringify(str.isChineseCitizenIdCardNumber(2)));
+            document.write('<br>');
             //转Base64
             str = "测试test";
-            console.log("转Base64", str, str.toBase64());
+            document.write("转Base64", str, str.toBase64());
+            document.write('<br>');
             // 解Base64
-            console.log("解Base64", str, str.toBase64().fromBase64());
+            document.write("解Base64", str, str.toBase64().fromBase64());
+            document.write('<br>');
             //GBK转UTF8
             str = "&#x8BF7&#x5728&#x6B64&#x5904&#x8F93&#x5165&#x4E2D&#x6587";
-            console.log("BK转UTF8", str, str.fromGbk());
+            document.write('<br>');
+            document.write("BK转UTF8", str, str.fromGbk());
             //下划线转换驼峰
             str = "cust_name";
-            console.log("下划线转换驼峰", str, str.toHump());
+            document.write("下划线转换驼峰", str, str.toHump());
+            document.write('<br>');
             //驼峰转换下划线
             str = "custName";
-            console.log("驼峰转换下划线", str, str.toLine());
+            document.write("驼峰转换下划线", str, str.toLine());
+            document.write('<br>');
             //SHA1加密
-            console.log("SHA1加密", str, str.sha1());
+            document.write("SHA1加密", str, str.sha1());
+            document.write('<br>');
             //MD5加密
-            console.log("MD5加密", str, str.md5());
+            document.write("MD5加密", str, str.md5());
+            document.write('<br>');
             // //AES加密
-            // console.log("AES加密", str, str.toAes("aespwdoo"));
+            // document.write("AES加密", str, str.toAes("aespwdoo"));
+            // document.write('<br>');
             // //AES加密
-            // console.log("AES解密", str, str.fromAes("aespwdoo"));
+            // document.write("AES解密", str, str.fromAes("aespwdoo"));
+            // document.write('<br>');
             // str = "U2FsdGVkX1+p3CeYVQYWo4XgUlxfzcHZ2zliwqfr94M=";
-            // console.log("AES解密", str, str.fromAes("aespwdoo"));
+            // document.write("AES解密", str, str.fromAes("aespwdoo"));
+            // document.write('<br>');
             /*********************String 原型函数************************/
 
             /*********************Convert************************/
             //转JSON对象
             var json = '{"a":"a"}';
             json = Comm.Convert.toJson(json);
-            console.log("转JSON对象", typeof json, json);
+            document.write("转JSON对象", typeof json, JSON.stringify(json));
+            document.write('<br>');
             //将JSON对象的key从驼峰转换成下划线命名
             json = { "customerName": "张三" };
             json = Comm.Convert.toLineJsonKey(json);
-            console.log("将JSON对象的key从驼峰转换成下划线命名", json);
+            document.write("将JSON对象的key从驼峰转换成下划线命名", JSON.stringify(json));
+            document.write('<br>');
             //将JSON对象的key从下划线转换成驼峰命名
             json = Comm.Convert.toHumpJsonKey(json);
-            console.log("将JSON对象的key从下划线转换成驼峰命名", json);
+            document.write("将JSON对象的key从下划线转换成驼峰命名", JSON.stringify(json));
+            document.write('<br>');
             //将秒数转换成00:00:00格式
             var t = 3612;
-            console.log("将秒数转换成00:00:00格式名", t, Comm.Convert.arrive_timer_format(t));
+            document.write("将秒数转换成00:00:00格式名", t, Comm.Convert.arrive_timer_format(t));
+            document.write('<br>');
             t = 363432412;
-            console.log("将秒数转换成00:00:00格式名", t, Comm.Convert.arrive_timer_format(t));
+            document.write("将秒数转换成00:00:00格式名", t, Comm.Convert.arrive_timer_format(t));
+            document.write('<br>');
             //Callback 接口变成 Promise 接口
             var fn = {
                 cbFun: function (num1, num2, cb) {
@@ -128,50 +169,129 @@
                 }
             };
             fn.cbFun(1, 2, function (err, result) {
-                console.log("Callback 接口变成 Promise 接口", result);
+                document.write("Callback 接口变成 Promise 接口", result);
+                document.write('<br>');
             });
             fn.promiseFun = Comm.Convert.promisify(fn.cbFun, fn);
             fn.promiseFun(2, 3).then(function (result) {
-                console.log("Callback 接口变成 Promise 接口", result);
+                document.write("Callback 接口变成 Promise 接口", result);
+                document.write('<br>');
             });
             //合并JSON对象
             var json1 = { "a": "1" };
             var json2 = { "b": "2" };
             var json3 = { "a": "3" };
             json = Comm.Convert.combineJson(json1, json2);
-            console.log("合并JSON对象", json);
+            document.write("合并JSON对象", JSON.stringify(json));
+            document.write('<br>');
             json = Comm.Convert.combineJson(json1, json2, json3);
-            console.log("合并JSON对象", json);
+            document.write("合并JSON对象", JSON.stringify(json));
+            document.write('<br>');
             //扩展toString
             str = 1;
-            console.log("扩展toString", str, Comm.Convert.toString(str));
+            document.write("扩展toString", str, Comm.Convert.toString(str));
+            document.write('<br>');
             str = { "a": "a" };
-            console.log("扩展toString", str, Comm.Convert.toString(str));
+            document.write("扩展toString", JSON.stringify(str), Comm.Convert.toString(str));
+            document.write('<br>');
             str = [{ "a": "1" }, { "a": "2" }];
-            console.log("扩展toString", str, Comm.Convert.toString(str));
+            document.write("扩展toString", JSON.stringify(str), Comm.Convert.toString(str));
+            document.write('<br>');
             str = new Error('test');
-            console.log("扩展toString", str, Comm.Convert.toString(str));
+            document.write("扩展toString", str, Comm.Convert.toString(str));
+            document.write('<br>');
             str = ['1', '2', '3'];
-            console.log("扩展toString", str, Comm.Convert.toString(str));
+            document.write("扩展toString", str, Comm.Convert.toString(str));
+            document.write('<br>');
             str = new Date();
-            console.log("扩展toString", str, Comm.Convert.toString(str));
+            document.write("扩展toString", str, Comm.Convert.toString(str));
+            document.write('<br>');
             var byte = 1;
-            console.log(byte + "字节直接使用直观的表示方法:", Comm.Convert.sizeFormat(byte));
+            document.write(byte + "字节直接使用直观的表示方法:", Comm.Convert.sizeFormat(byte));
+            document.write('<br>');
             /*********************Convert************************/
 
             /*********************Url************************/
-            console.log("当前地址参数:", Comm.Url.convert());
-            console.log("当前地址参数:", Comm.Url.getParams("name"));
+            document.write("当前地址参数:", JSON.stringify(Comm.Url.convert()));
+            document.write('<br>');
+            document.write("当前地址参数:", Comm.Url.getParams("name"));
+            document.write('<br>');
             /*********************Url************************/
 
             /*********************日历************************/
             var date = new Date('2020-04-23');
             var calendar = Comm.Calendar.solar2lunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
-            console.log(date.format('yyyy-MM-dd那天：'), calendar);
+            document.write(date.format('yyyy-MM-dd那天：'), JSON.stringify(calendar));
+            document.write('<br>');
             date = new Date('2020-05-23');
             calendar = Comm.Calendar.solar2lunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
-            console.log(date.format('yyyy-MM-dd那天：'), calendar);
+            document.write(date.format('yyyy-MM-dd那天：'), JSON.stringify(calendar));
+            document.write('<br>');
             /*********************日历************************/
+
+            /*********************日期操作************************/
+            document.write('本月第一天：', Comm.Date.getFirstDateOfMonth().format('yyyy-MM-dd hh:mm:ss'));
+            document.write('<br>');
+            document.write('本月最后一天：', Comm.Date.getLastDateOfMonth().format('yyyy-MM-dd hh:mm:ss'));
+            document.write('<br>');
+
+            document.write('2021-02 月第一天：', Comm.Date.getFirstDateOfMonth('2021-02-01').format('yyyy-MM-dd hh:mm:ss'));
+            document.write('<br>');
+            document.write('2021-02 月最后一天：', Comm.Date.getLastDateOfMonth('2021-02-01').format('yyyy-MM-dd hh:mm:ss'));
+            document.write('<br>');
+
+            document.write('本年第一天：', Comm.Date.getFirstDateOfYear().format('yyyy-MM-dd hh:mm:ss'));
+            document.write('<br>');
+            document.write('本年最后一天：', Comm.Date.getLastDateOfYear().format('yyyy-MM-dd hh:mm:ss'));
+            document.write('<br>');
+
+            document.write('本周的周起止时间：', Comm.Date.getCurrentWeek().map(item => item.format('yyyy-MM-dd hh:mm:ss')));
+            document.write('<br>');
+            document.write('2020-02-28 周的周起止时间：', Comm.Date.getCurrentWeek('2020-02-28').map(item => item.format('yyyy-MM-dd hh:mm:ss')));
+            document.write('<br>');
+
+            document.write('当月的月的起止时间：', Comm.Date.getCurrentMonth().map(item => item.format('yyyy-MM-dd hh:mm:ss')));
+            document.write('<br>');
+            document.write('2021-02 当月的月的起止时间：', Comm.Date.getCurrentMonth('2021-02').map(item => item.format('yyyy-MM-dd hh:mm:ss')));
+            document.write('<br>');
+
+            document.write('获取指定日期所在的季度的开始的月份：', Comm.Date.getQuarterSeasonStartMonth().format('yyyy-MM-dd hh:mm:ss'));
+            document.write('<br>');
+            document.write('2021-05-01 所在的季度的开始的月份：', Comm.Date.getQuarterSeasonStartMonth('2021-05-01').format('yyyy-MM-dd hh:mm:ss'));
+            document.write('<br>');
+
+            document.write('获取指定日期所在的季度的时间范围：', Comm.Date.getQuarterSeason().map(item => item.format('yyyy-MM-dd hh:mm:ss')));
+            document.write('<br>');
+            document.write('2021-05-01 所在的季度的时间范围：', Comm.Date.getQuarterSeason('2021-05-01').map(item => item.format('yyyy-MM-dd hh:mm:ss')));
+            document.write('<br>');
+
+            document.write('获取当前月份的月天数：' + Comm.Date.getMonthDays());
+            document.write('<br>');
+            document.write('获取2020-02-01所在月份的月天数：' + Comm.Date.getMonthDays('2020-02-01'));
+            document.write('<br>');
+            document.write('获取2021-02-01所在月份的月天数：' + Comm.Date.getMonthDays('2021-02-01'));
+            document.write('<br>');
+
+            document.write('获取指定日期上个月的第一天：', Comm.Date.getPriorMonthFirstDay().format('yyyy-MM-dd hh:mm:ss'));
+            document.write('<br>');
+            document.write('2021-03-01 上个月的第一天：', Comm.Date.getPriorMonthFirstDay('2021-03-01').format('yyyy-MM-dd hh:mm:ss'));
+            document.write('<br>');
+
+            document.write('获取指定日期上个月的时间范围：', Comm.Date.getPreviousMonth().map(item => item.format('yyyy-MM-dd hh:mm:ss')));
+            document.write('<br>');
+            document.write('2021-03-01 上个月的时间范围：', Comm.Date.getPreviousMonth('2021-03-01').map(item => item.format('yyyy-MM-dd hh:mm:ss')));
+            document.write('<br>');
+
+            document.write('获取指定日期上一周的时间范围：', Comm.Date.getPreviousWeek().map(item => item.format('yyyy-MM-dd hh:mm:ss')));
+            document.write('<br>');
+            document.write('2021-01-01 上一周的时间范围：', Comm.Date.getPreviousWeek('2021-01-01').map(item => item.format('yyyy-MM-dd hh:mm:ss')));
+            document.write('<br>');
+
+            document.write('获取去年的时间范围：', Comm.Date.getPreviousYear().map(item => item.format('yyyy-MM-dd hh:mm:ss')));
+            document.write('<br>');
+            document.write('2020-01-01 上一年的时间范围：', Comm.Date.getPreviousYear('2020-01-01').map(item => item.format('yyyy-MM-dd hh:mm:ss')));
+            document.write('<br>');
+            /*********************日期操作************************/
         }
     </script>
 </body>
